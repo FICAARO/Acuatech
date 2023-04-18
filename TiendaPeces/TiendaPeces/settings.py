@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure--^ylu+-(ed*v6j#4=)vq^t67m$15y)hv6@@oxvn@2(nc9%_r4k
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.ngrok.io']
 
 
 # Application definition
@@ -54,7 +54,7 @@ ROOT_URLCONF = 'TiendaPeces.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ["TiendaPeces/templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -19,5 +19,6 @@ from django.urls import path
 from TiendaPeces.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('index/', index),
+    path('', site.index),
+    path('index/', site.index)
 ]
