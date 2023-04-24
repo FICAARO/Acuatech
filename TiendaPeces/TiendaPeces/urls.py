@@ -17,8 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from TiendaPeces.views import *
+import TiendaPecesWebApp.views 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', site.index),
-    path('index/', site.index)
+    path('', TiendaPecesWebApp.views.site.index,name="index"),
+    path('index/', TiendaPecesWebApp.views.site.index,name="index")
 ]
