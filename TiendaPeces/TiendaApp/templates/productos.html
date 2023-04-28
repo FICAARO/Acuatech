@@ -1,12 +1,14 @@
 {% extends "template.html" %}
 {% block content %}
 {% for producto in productos %}
-{{ producto }}
 {{ producto.nombre }}
+{{ producto.imagen.url }}
+<img  src="{{ producto.imagen.url }}" alt="" style="width:50%;">
+
 <section class="page-section clearfix">
 	<div class="conteiner">
 		<div class="intro"></div>
-			<img class="intro-img img-fluid mb-3 mb-lg-0 rounded" src="{{ producto.image.url }}" alt="" style="width:50%;">
+			<img  src="{{producto.image.url}}" alt="" style="width:50%;">
 			<div>
 				<div>
 					
