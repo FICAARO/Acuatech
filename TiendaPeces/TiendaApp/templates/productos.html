@@ -1,14 +1,25 @@
 {% extends "template.html" %}
 {% block content %}
+<div class="w-75 p-3" >
+	<div class="input-group">
+	  <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+	  <button type="button" class="btn btn-outline-primary">search</button>
+	</div>
 {% for producto in productos %}
-{{ producto.nombre }}
-{{ producto.imagen.url }}
-<img  src="{{ producto.imagen.url }}" alt="" style="width:50%;">
-
+<br>
 <section class="page-section clearfix">
 	<div class="conteiner">
 		<div class="intro"></div>
-			<img  src="{{producto.image.url}}" alt="" style="width:50%;">
+		<table>
+			<td rowspam=2>
+				<img class="rounded float-start" src="{{producto.imagen.url}}" alt="" style="width:200px;height: 200px;">
+			</td>
+			<td>
+				<th></th>
+				<th></th>
+			</td>
+
+		</table>
 			<div>
 				<div>
 					
@@ -19,8 +30,18 @@
 				</div>
 			</div>
 	</div>
-	
-
 </section>
+</div>
+<div class="card text-white bg-primary mb-3" style="max-width: 18rem;">  <div class="card-body">
+	  <div class="card-body">
+	  	
+	<img class="card-img-top" src="{{producto.imagen.url}}" alt="" style="width:200px;height: 200px;">
+	<br>
+    <h5 class="card-title">{{producto.nombre}}</h5>
+    <p class="card-text">{{producto.precio}}</p>
+    <a href="#" class="btn btn-primary">Agregar al carro</a>
+  </div>
+</div>
+</div>
 {% endfor %}
 {% endblock %}
