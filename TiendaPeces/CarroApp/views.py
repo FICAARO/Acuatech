@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .Carro import carro
+from .Carro import Carro as carro
 from tienda.models import Producto
 def agregar(request,prodocto_id):
 	mi_carro=carro(request)
