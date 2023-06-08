@@ -1,0 +1,51 @@
+{% extends "templateshop.html" %}
+{% block content %}
+<div class="w-100 p-3">
+  <div class="container mt-5 mb-5">
+    <div class="d-flex justify-content-center row">
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Producto</th>
+          <th scope="col">Cantidad</th>
+          <th scope="col">Suma</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if request.session.carro.item %}
+          {% for key,value in request.session.carro.items%}
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="4">
+              <div class="alert alert-danger text-center">
+                El Carrito esta vacio
+              </div>
+            </td>
+          </tr>
+        {% endif %}
+        <tr>
+          <th scope="row">1</th>
+          <td>Mark</td>
+          <td>Otto</td>
+          <td>@mdo</td>
+        </tr>
+        <tr>
+          <th scope="row">2</th>
+          <td>Jacob</td>
+          <td>Thornton</td>
+          <td>@fat</td>
+        </tr>
+        <tr>
+          <th scope="row">3</th>
+          <td>Larry</td>
+          <td>the Bird</td>
+          <td>@twitter</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

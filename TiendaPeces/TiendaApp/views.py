@@ -8,3 +8,6 @@ def productos(request):
 	return render(request,"productos.html",{"productos":Producto.objects.all()})
 def index(request):
 	return render(request,"tiendaindex.html")
+def carro(request):
+	return render(request,"carro.html")
+
