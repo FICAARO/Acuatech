@@ -3,6 +3,7 @@
 <div class="w-100 p-3">
   <div class="container mt-5 mb-5">
     <div class="d-flex justify-content-center row">
+    <h3></h3>
     <table class="table">
       <thead class="thead-dark">
         <tr>
@@ -13,10 +14,7 @@
         </tr>
       </thead>
       <tbody>
-        {% if request.session.carro.item %}
-          {% for key,value in request.session.carro.items%}
-          {% endfor %}
-        {% else %}
+        {% if not request.session.carro.items %}
           <tr>
             <td colspan="4">
               <div class="alert alert-danger text-center">
@@ -24,27 +22,28 @@
               </div>
             </td>
           </tr>
-        {% endif %}
-        <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td>Larry</td>
-          <td>the Bird</td>
-          <td>@twitter</td>
-        </tr>
+
+        {% else %}
+
+            {% for key, value in request.session.carro.items %}
+           <tr>
+            <th scope="row">{{ forloop.counter }} </th>
+            <td>{{value.nombre}}</td>
+            <td>{{value.cantidad}}</td>
+            <td>
+                    <a href="{% url 'carro:agregar' value.producto_id %}" class="btn btn-sm btn-success">+</a>
+                    <a href="{% url 'carro:restar' value.producto_id %}" class="btn btn-sm btn-success">-</a>
+                    <br/>
+                    {{value.precio}} $
+            </td>
+
+          </tr>
+
+          {% endfor %}
+        {% endif %}      
       </tbody>
     </table>
+    <h3>Total: {{total_carro}}</h3>
     </div>
   </div>
 </div>

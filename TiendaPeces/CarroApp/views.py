@@ -1,22 +1,22 @@
 from django.shortcuts import render, redirect
 from .Carro import Carro as carro
-from tienda.models import Producto
-def agregar(request,prodocto_id):
+from TiendaApp.models import Producto
+def agregar(request,producto_id):
 	mi_carro=carro(request)
-	prodocto=Producto.objects.get(id=prodocto_id)
+	producto=Producto.objects.get(id=producto_id)
 	mi_carro.agregar(producto)
-	return rendirect("tienda")
-def eliminar(request,prodocto_id):
+	return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+def eliminar(request,producto_id):
 	mi_carro=carro(request)
-	prodocto=Producto.objects.get(id=prodocto_id)
+	producto=Producto.objects.get(id=producto_id)
 	mi_carro.eliminar(producto)
-	return rendirect("tienda")
-def restar(request,prodocto_id):
+	return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+def restar(request,producto_id):
 	mi_carro=carro(request)
-	prodocto=Producto.objects.get(id=prodocto_id)
+	producto=Producto.objects.get(id=producto_id)
 	mi_carro.restar(producto)
-	return rendirect("tienda")
-def limpiar_carro(request,prodocto_id):
+	return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+def limpiar_carro(request,producto_id):
 	mi_carro=carro(request)
 	mi_carro.limpiar_carro()
-	return rendirect("tienda")
+	return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))

@@ -24,7 +24,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('TiendaPecesWebApp.urls')),# TiendaPecesWebApp.views.site.index,name="index"),
-    path('tienda',include('TiendaApp.urls')),
+    path('tienda/',include('TiendaApp.urls')),
+    path('carro/',include('CarroApp.urls')),
+
     #path('index/', TiendaPecesWebApp.views.site.index,name="index")
 ]
 
