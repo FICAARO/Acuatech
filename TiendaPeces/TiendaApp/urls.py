@@ -22,7 +22,7 @@ from TiendaApp.views import *
 urlpatterns = [
     path('productos/', productos,name="productos"),
     path('carro/', carro,name="carro"),
-    path('productos/<str:palabra>', productos,name="productos_busqueda"),
+    path('productos/<str:busqueda>', productos_search,name="productos_busqueda"),
     path('peces/', peces,name="peces"),
     path('', index,name="tiendaindex"),
 ]
