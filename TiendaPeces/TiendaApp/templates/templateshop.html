@@ -33,10 +33,10 @@
         <button class="btn btn-primary"><a class="nav-link {% if request.path == '/tienda/productos/' %}disabled{% endif %}" href="/tienda/productos/">Productos</a></button>
       </li>
       <li class="nav-item px-lg-4">
-        <button class="btn btn-primary"><a class="nav-link {% if request.path == '/autenticacion//' %}disabled{% endif %}" href="/autenticacion/">Autenticacion</a></li>
+        <button class="btn btn-primary"><a class="nav-link {% if request.path == '/autenticacion/' or request.user.is_authenticated  %}disabled{% endif %}" href="/autenticacion/">Registrarse</a></li>
       </li>
       <li class="nav-item px-lg-4">
-        <button class="btn btn-primary"><a class="nav-link {% if request.path == '/autenticacion/login' %}disabled{% endif %}" href="/autenticacion/login">Login</a></button>
+        <button class="btn btn-primary"><a class="nav-link {% if request.path == '/autenticacion/login' or request.user.is_authenticated %}disabled{% endif %}" href="/autenticacion/login">Login</a></button>
       </li>
         <li class="nav-item px-lg-4">
         <button class="btn btn-primary"><a class="nav-link {% if request.path == '/contacto/' %}disabled{% endif %}" href="/tienda/carro/">Carrito</a></button>

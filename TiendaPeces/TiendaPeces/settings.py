@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'CarroApp',
     'autenticacion',
     'crispy_bootstrap4',
+    #'pedidos',
 ]
 
 MIDDLEWARE = [

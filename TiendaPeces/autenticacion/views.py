@@ -15,7 +15,8 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 class CustomUserCreationForm(UserCreationForm):  
     username = forms.CharField(label='Nombre de usuario', min_length=5, max_length=150)  
-    email = forms.EmailField(label='Email')  
+    email = forms.EmailField(label='Email') 
+    telefono = forms.CharField(label='Numero de telefono',min_length=10, max_length=13)  
     password1 = forms.CharField(label='Contraseña', widget=forms.PasswordInput)  
     password2 = forms.CharField(label='Confirme Contraseña', widget=forms.PasswordInput)  
   
@@ -63,7 +64,7 @@ class VRegistro(View):
 
             login(request, usuario)
 
-            return redirect('/')
+            return redirect('/tienda/carro/')
 
         else:
             for msg in form.error_messages:
