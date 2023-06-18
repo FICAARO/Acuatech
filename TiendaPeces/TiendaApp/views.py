@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Producto
+from .models import Producto,CategoriaProducto,SubCategoriaProducto
 def peces(request):
 	productosall=Producto.objects.filter(categorias="1")
 	return render(request,"productos.html",{"productos":productosall})
@@ -8,9 +8,12 @@ def productos(request):
 def productos_search(request,busqueda):
 	if "-" in busqueda:
 		cat,subcat=busqueda.split("-")
-		productos=Producto.objects.filter(categorias=cat,subCategoria=subcat)
+		categoria=CategoriaProducto.objects.get(nombre=cat).id
+		subcategoria=SubCategoriaProducto.objects.get(nombre=subcat).id
+		productos=Producto.objects.filter(categorias=categoria,subCategoria=subcategoria)
 	else:
-		productos=Producto.objects.filter(categorias=busqueda)
+		categoria=CategoriaProducto.objects.get(nombre=busqueda).id
+		productos=Producto.objects.filter(categorias=categoria)
 	return render(request,"productos.html",{"productos":productos})
 def index(request):
 	return render(request,"tiendaindex.html")
