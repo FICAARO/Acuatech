@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.shortcuts import redirect, render
 
 from django.contrib.auth.decorators import login_required
-from carro.carro import Carro
+from CarroApp.Carro import Carro
 
 from pedidos.models import LineaPedido, Pedido
 
@@ -38,8 +38,6 @@ def procesar_pedido(request):
         lineas_pedido=lineas_pedido,
         nombreusuario=request.user.username,
         email_usuario=request.user.email
-        
-
     )
     #mensaje para el futuro
     messages.success(request, "El pedido se ha creado correctamente")
@@ -59,8 +57,8 @@ def enviar_mail(**kwargs):
         })
 
     mensaje_texto=strip_tags(mensaje)
-    from_email="cursos@pildorasinformaticas.es"
+    from_email="jero98772@gmail.com"
     #to=kwargs.get("email_usuario")
-    to="aquí la dirección del destinatario"
+    to="jero98772@gmail.com"
     send_mail(asunto,mensaje_texto,from_email,[to], html_message=mensaje)
     

@@ -24,5 +24,6 @@ urlpatterns = [
     path('carro/', carro,name="carro"),
     path('productos/<str:busqueda>', productos_search,name="productos_busqueda"),
     path('peces/', peces,name="peces"),
+    path('pagar/', pagar,name="pagar"),
     path('', index,name="tiendaindex"),
 ]

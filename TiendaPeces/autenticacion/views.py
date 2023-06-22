@@ -46,7 +46,8 @@ class CustomUserCreationForm(UserCreationForm):
         user = User.objects.create_user(  
             self.cleaned_data['username'],  
             self.cleaned_data['email'],  
-            self.cleaned_data['password1']  
+            self.cleaned_data['telephone'],  
+            self.cleaned_data['password1'] 
         )  
         return user  
 class VRegistro(View):

@@ -30,12 +30,7 @@
             <th scope="row">{{ forloop.counter }} </th>
             <td>{{value.nombre}}</td>
             <td>{{value.cantidad}}</td>
-            <td>
-                    <a href="{% url 'carro:agregar' value.producto_id %}" class="btn btn-sm btn-success">+</a>
-                    <a href="{% url 'carro:restar' value.producto_id %}" class="btn btn-sm btn-success">-</a>
-                    <br/>
-                    {{value.precio}} $
-            </td>
+            <td>{{value.precio}}</td>
 
           </tr>
 
@@ -45,11 +40,36 @@
     </table>
     <h3>Total: {{total_carro}}</h3>
     <br>
+    <br>
+    <h2>Datos del usuario</h2>
     {% if request.user.is_authenticated %}
-    <a href="/tienda/pagar/">
-      <button type="button" class="btn btn-primary btn-lg btn-block btn btn-success">Pagar</button>
+        <table>
+          <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <!--th>Telefono</th-->
+          </tr>
+          <tr>
+            <th>{{ request.user }}</th>
+            <th>{{ request.user.email }}</th>
+            <!--th>{{ request.user }}</th-->
+          </tr>
+        </table>
+        <br><br>
+          <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                <label class="form-label" for="customFile"><h3>Inserte el comprobante de pago</h3></label>
+                <input type="file" name="upload"  class="form-control" id="customFile" accept="image/*" required>
+                <br>
+                <button type="submmit" class="btn btn-primary btn-lg btn-block btn btn-success">Pagar</button>
+             
+          </form>
+
+    <a href="/pagar/">
     </a>
     {% endif %}
+    {{ msg }}
     </div>
   </div>
 </div>

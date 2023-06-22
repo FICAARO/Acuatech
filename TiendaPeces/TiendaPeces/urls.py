@@ -27,7 +27,7 @@ urlpatterns = [
     path('tienda/',include('TiendaApp.urls')),
     path('carro/',include('CarroApp.urls')),
     path('autenticacion/',include('autenticacion.urls')),
-
+    path('pedidos/',include('pedidos.urls')),
     #path('index/', TiendaPecesWebApp.views.site.index,name="index")
 ]
 
