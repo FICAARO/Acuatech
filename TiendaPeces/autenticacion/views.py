@@ -16,7 +16,7 @@ class CustomAuthenticationForm(AuthenticationForm):
 class CustomUserCreationForm(UserCreationForm):  
     username = forms.CharField(label='Nombre de usuario', min_length=5, max_length=150)  
     email = forms.EmailField(label='Email') 
-    telefono = forms.CharField(label='Numero de telefono',min_length=10, max_length=13)  
+    #telefono = forms.CharField(label='Numero de telefono',min_length=10, max_length=13)  
     password1 = forms.CharField(label='Contraseña', widget=forms.PasswordInput)  
     password2 = forms.CharField(label='Confirme Contraseña', widget=forms.PasswordInput)  
   
@@ -46,7 +46,7 @@ class CustomUserCreationForm(UserCreationForm):
         user = User.objects.create_user(  
             self.cleaned_data['username'],  
             self.cleaned_data['email'],  
-            self.cleaned_data['telephone'],  
+            #self.cleaned_data['telephone'],  
             self.cleaned_data['password1'] 
         )  
         return user  
