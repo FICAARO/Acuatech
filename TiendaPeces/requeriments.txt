@@ -1,3 +1,4 @@
 crispy-bootstrap4
 Pillow
 django-phone-field
+Django
