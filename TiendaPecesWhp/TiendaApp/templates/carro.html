@@ -46,8 +46,16 @@
     <h3>Total: {{total_carro}}</h3>
     <br>
     {% if request.user.is_authenticated %}
-    <a href="/tienda/pagar/">
+    <!--a href="/tienda/pagar/">
       <button type="button" class="btn btn-primary btn-lg btn-block btn btn-success">Pagar</button>
+    </a-->
+    <a href="https://api.whatsapp.com/send?phone=573147045511&text=Hola nesesito un 
+    {% for key, value in request.session.carro.items %}
+        {{value.cantidad}} {{value.nombre}},
+    {% endfor %}
+    y me dice que el total es:{{total_carro}}
+    ">
+      <button type="button" class="btn btn-primary btn-lg btn-block btn btn-success">Ordenar</button>
     </a>
     {% else %}
     <a href="https://api.whatsapp.com/send?phone=573147045511&text=Hola nesesito un 
