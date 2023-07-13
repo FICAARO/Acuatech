@@ -40,7 +40,7 @@
           </tr>
 
           {% endfor %}
-        {% endif %}      
+        {% endif %}
       </tbody>
     </table>
     <h3>Total: {{total_carro}}</h3>
@@ -49,6 +49,11 @@
     <a href="/tienda/pagar/">
       <button type="button" class="btn btn-primary btn-lg btn-block btn btn-success">Pagar</button>
     </a>
+    {% else %}
+    <a href="" >
+      <button type="button" disabled class="btn btn-primary btn-lg btn-block btn btn-success">Pagar</button>
+    </a>
+    <h3>Nesesitas <a href="/autenticacion/login">registrarte </a></h3>
     {% endif %}
     </div>
   </div>
