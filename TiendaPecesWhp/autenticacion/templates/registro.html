@@ -1,0 +1,25 @@
+{% extends "templateshop.html" %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h3>
+<form method="post" action="" style="color: gray;">
+
+
+    {% csrf_token %} 
+
+    <div style="width: 75%; margin: auto;">
+
+    {{form|crispy}}
+
+    <button type="submit" class="btn btn-success">Regístrate</button>
+
+</div>
+
+
+</form>
+</h3>
+{% endblock %}
