@@ -28,6 +28,9 @@ urlpatterns = [
     path('carro/',include('CarroApp.urls')),
     path('autenticacion/',include('autenticacion.urls')),
     path('pedidos/',include('pedidos.urls')),
+    path('fishtank3d/',include('fishtank3d.urls')),
+    #path('chatSeller/',include('chatSeller.urls')),
+
     #path('index/', TiendaPecesWebApp.views.site.index,name="index")
 ]
 

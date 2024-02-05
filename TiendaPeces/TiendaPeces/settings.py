@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'autenticacion',
     'crispy_bootstrap4',
     'pedidos',
+    'fishtank3d',#    'chatSeller',
     #'phonenumber_field',
 ]
 
