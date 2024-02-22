@@ -6,9 +6,6 @@
 <meta charset="UTF-8"> 
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>
-	Drawfishtank
-</title>
 <script type="text/javascript">
 	class fishtank{
 	constructor() {
@@ -30,6 +27,7 @@ rectangle(){
 	document.getElementById('help').innerHTML = ""
 	litros=(this.entrada_lado_1.value*this.entrada_lado_2.value*this.entrada_lado_3.value)/1000;
 	this.litrostxt.innerHTML=litros+"  l";
+	this.litrostxt.value=litros
 	this.texto_lado1.innerHTML='large cm';
 	this.texto_lado2.innerHTML='heigth cm';
 	this.texto_lado3.innerHTML='width cm';
@@ -43,6 +41,7 @@ cubic(){
 	document.getElementById('help').innerHTML = ""
 	litros=(parseFloat(this.entrada_lado_1.value)**3)/1000;
 	this.litrostxt.innerHTML=litros+" l"
+	this.litrostxt.value=litros
 	this.texto_lado1.innerHTML='large cm '
 	this.texto_lado2.innerHTML='--NOT NEEDED--'
 	this.texto_lado3.innerHTML='--NOT NEEDED--'
@@ -56,6 +55,7 @@ triangularpris(){
 	litros=(((this.entrada_lado_1.value*this.entrada_lado_2.value)/2)*this.entrada_lado_3.value)/1000
 	this.figura.innerHTML='trianglar prism'
 	this.litrostxt.innerHTML=litros+"l"
+	this.litrostxt.value=litros
 	this.texto_lado1.innerHTML='large of base cm'
 	this.texto_lado2.innerHTML='heigth of base cm'
 	this.texto_lado3.innerHTML='heigth  cm '
@@ -72,6 +72,7 @@ cilinder(){
 	this.R=parseFloat(this.entrada_lado_1.value)
 	this.h=parseFloat(this.entrada_lado_2.value)
 	litros=PI*(parseFloat(this.entrada_lado_1.value)**2)*parseFloat(this.entrada_lado_2.value)/1000	
+	this.litrostxt.value=litros
 	this.texto_lado1.innerHTML='radio cm'
 	this.texto_lado2.innerHTML='heigth cm'
 	this.texto_lado3.innerHTML='--NOT NEEDED--'
@@ -84,6 +85,32 @@ cilinder(){
 
 
 }
+function calculate_price(){
+	pricetxt = document.getElementById('price');
+	material = document.getElementById('material');
+	liters = document.getElementById('litros').value
+	seleccion = material.options[material.selectedIndex].value;
+
+	console.log(material)
+
+	price=parseInt(liters);
+	console.log(price)
+	if (seleccion == 'rectagle' || seleccion == 'cubic') {
+		price+=parseInt(liters/100)*20
+	}
+	else if (seleccion == 'triangle'){
+		price+=parseInt(liters/100)*30
+	}
+	else if (seleccion == 'cilinder') {
+		price+=parseInt(liters/100)*50
+	}
+
+	if(seleccion=="aclylic"){
+		price+=parseInt(liters/100)*25
+	}
+	console.log(price)
+	pricetxt.innerHTML=price+ "$"
+}
 
 let dft ;
 function setup() {
@@ -91,9 +118,10 @@ function setup() {
 	dft = new fishtank();
 }
 function draw() {
+
 	background(150);
 	x = (windowWidth - width) / 2 ;
-	y = 300;
+	y = 120;
 	canvas.position(x, y);
 	Select = document.getElementById('select');
 	seleccion = Select.options[Select.selectedIndex].value;
@@ -115,12 +143,7 @@ function draw() {
 </head>
 <body>
 <!-- for jinga template-->
-<center>
-<p style="font-size:40px">Drawfishtank</p>
-<b><h2>word wide web of fish</h2><b>
-</center>
 
-<img src="http://wiki.unloquer.org/_media/personas/jero98772/2021-02-24-145222_225x175_scrot.png" alt="drawfishtnak" width="200" height="200"/>
 <style type="text/css">
 	body
 	{
@@ -152,6 +175,13 @@ function draw() {
 <br>
 <br>
 <br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 <p id="figura"> figura<p>
 <form>
@@ -173,12 +203,23 @@ function draw() {
   <option id="prisma_triangular " value="triangle">trianglar prism</option>
   <option id="cilindro" value="cilinder">cilinder</option>
 </select>
+
+<select id="material">
+	<option id="aclylic " value="aclylic">acrilic</option>
+	<option id="glass" value="glass">glass</option>
+</select>
 <br>
-<input type="button" onclick="setInterval(draw,500)"  value="calculate">
-<p>liters</p>
+<p>Liters</p>
 <p id="litros" ></p>
+<p>Price</p>
+<p id="price" ></p>
 <p id="help"></p>
+
+<input type="button" onclick="calculate_price();"  value="calculate">
+
 </form>
+
+<p>(right now is only working in firefox)</p>
 <!-- for jinga template-->
 </body>
 </html

@@ -24,10 +24,15 @@
         <button class="btn btn-primary"><a class="nav-link {% if request.path == 'tienda/productos/' %}disabled{% endif %}" href="/tienda/productos/">Productos</a></button>
       </li>
       <li class="nav-item px-lg-4">
+        <button class="btn btn-primary"><a class="nav-link {% if request.path == '/fishtank3d/' %}disabled{% endif %}" href="/fishtank3d/">Herramientas</a></button>
+      </li>
+      <li class="nav-item px-lg-4">
         <button class="btn btn-primary"><a class="nav-link {% if request.path == '/contacto/' %}disabled{% endif %}" href="/contacto/">Contacto</a></button>
       </li>
-        <li class="nav-item px-lg-4">
+      <li class="nav-item px-lg-4">
         <button class="btn btn-primary"><a class="nav-link {% if request.path == '/contacto/' %}disabled{% endif %}" href="/contacto/"></a></button>
+      </li>
+
     </ul>
   </div>
 </nav>
