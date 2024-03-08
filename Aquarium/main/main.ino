@@ -1,5 +1,6 @@
-// Libraries CM4
+// Libraries
 #include <WiFi.h>
+#include <EEPROM.h>
 #include <DHT.h>                // "DHT sensor library" by "Adafruit": v1.4.6
 #include <DallasTemperature.h>  // "DallasTemperature" by "Miles Burton": v3.9.0
 #include <InfluxDbClient.h>     // "ESP8266 Influxdb" by "Tobias Schürg" v3.13.1
@@ -8,6 +9,7 @@
 #include "DallasSensor.h"
 #include "GenericSensor.h"
 #include "Influx.h"
+#include "AccessPoint.h"
 #include "Secrets.h"
 
 // Pin I/O
@@ -23,23 +25,28 @@
 #define NEOLIGHT2 18  // Neopixel strip 2 (D18)
 
 // Constants
-#define WIFI_TIMEOUT 10000      // Limit time on WiFi disconnection
-#define FLUX_SEND_TIMEOUT 5000  // Interval time for sending data to database
-#define READ_TIMEOUT 2000       // Interval time for reading all the sensors
+const char* AP_SSID = "CUSTOM_SSID";      // SSID of the access point Wi-Fi network
+const char* AP_PASS = "CUSTOM_PASSWORD";  // Password of the access point Wi-Fi network
+#define WIFI_TIMEOUT 10000                // Limit time on WiFi disconnection
 
-#define DHTTYPE DHT11     // Type of the DHT sensor
-#define TURB_ANALOG true  // Whether the turbidity sensor is ADC
-#define PIXELS1 12        // Amount of pixels in Neopixel strip 1
-#define PIXELS2 24        // Amount of pixels in Neopixel strip 2
+#define FLUX_SEND_TIMEOUT 5000                      // Interval time for sending data to database
+
+#define DHTTYPE DHT11      // Type of the DHT sensor
+#define TURB_ANALOG true   // Whether the turbidity sensor is ADC
+#define READ_TIMEOUT 2000  // Interval time for reading all the sensors
+#define PIXELS1 12         // Amount of pixels in Neopixel strip 1
+#define PIXELS2 24         // Amount of pixels in Neopixel strip 2
 
 // Variables
+String wifiSSID = "";
+String wifiPass = "";
 bool wifiConnected = false;
-bool disconnectWarn = false;
 DhtSensor dht(DHTPIN, DHTTYPE);
 DallasSensor dallas(WTEMP);
 GenericSensor wlevel(WLEVEL, true);
 GenericSensor turbidity(TURBIDITY, TURB_ANALOG);
 Influx influx(FLUX_URL, FLUX_ORG, FLUX_BUCKET, FLUX_TOKEN, InfluxDbCloud2CACert, "test");
+AccessPoint ap(AP_SSID, AP_PASS, 80);
 
 // Time variables
 unsigned long currTime = 0;          // Current relative time of the program
@@ -77,6 +84,7 @@ void setup() {
 
   // Comms
   Serial.begin(115200);
+  EEPROM.begin(512);
 
   // Sensors
   dht.begin();
@@ -86,8 +94,12 @@ void setup() {
   else turbidity.begin();
 
   // WiFi
+  EEPROM.get(0, wifiSSID);
+  EEPROM.get(sizeof(wifiSSID), wifiPass);
+  Serial.println("Using Credentials: " + wifiSSID + " :: " + wifiPass);
+
   WiFi.mode(WIFI_STA);
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  WiFi.begin(wifiSSID, wifiPass);
 }
 
 void loop() {
@@ -101,11 +113,12 @@ void loop() {
   }
 
   // Launch AP on no WiFi or BOOT button press
-  if ((currTime - lastConnected >= WIFI_TIMEOUT || !digitalRead(BOOT)) && !disconnectWarn) {
+  if (ap.launched) ap.handleClient();
+  else if (digitalRead(BOOT) == LOW || currTime - lastConnected >= WIFI_TIMEOUT) {
     Serial.println("Launching AP...");
     digitalWrite(BUILTIN_LED, HIGH);
-    disconnectWarn = true;
-    // ...Launch AP
+
+    ap.begin();
   }
 
   // Update the sensor readings
