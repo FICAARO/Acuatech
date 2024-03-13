@@ -18,9 +18,9 @@ from django.contrib import admin
 from django.urls import path
 
 
-from chatSeller.views import * 
+from healthcam.views import * 
 
 urlpatterns = [
-    path('', chatSellerIndex,name="chatSeller"),
+    path('', healthcamIndex,name="healthcam"),
 
 ]
