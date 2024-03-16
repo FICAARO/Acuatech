@@ -113,6 +113,10 @@ public:
         String ssid = header.substring(header.indexOf("wifi-ssid=") + 10, header.indexOf("&"));
         String pass = header.substring(header.indexOf("wifi-pass=") + 10);
 
+        // TODO: Decode URL
+        ssid.replace('+', ' ');
+        pass.replace('+', ' ');
+
         EEPROM.put(0, ssid);
         EEPROM.put(sizeof(ssid), pass);
         EEPROM.commit();
