@@ -33,6 +33,7 @@
 const char* AP_SSID = "CUSTOM_SSID";      // SSID of the access point Wi-Fi network
 const char* AP_PASS = "CUSTOM_PASSWORD";  // Password of the access point Wi-Fi network
 #define WIFI_TIMEOUT 10000                // Limit time on WiFi disconnection
+
 #define GMT_OFFSET -18000                 // Timezone offset compared to GMT
 #define DAYLIGHT_OFFSET 0                 // Daylight savings offset
 #define NTP_SERVER "pool.ntp.org"         // NTP default server
@@ -49,6 +50,8 @@ const char* AP_PASS = "CUSTOM_PASSWORD";  // Password of the access point Wi-Fi 
 #define READ_TIMEOUT 2000  // Interval time for reading all the sensors
 #define PIXELS1 12         // Amount of pixels in Neopixel strip 1
 #define PIXELS2 24         // Amount of pixels in Neopixel strip 2
+
+uint8_t COLOR_TIMES[5] = { 7, 10, 14, 18, 21 };  // TODO: Make configurable
 uint8_t COLORS[5][8] = {
   {   0,   0,   0,   0,   0,   0,   0, 0 },
   { 255, 255, 255,   0,   0, 255,  50, 3 },
@@ -58,12 +61,14 @@ uint8_t COLORS[5][8] = {
 };
 
 // Variables
-String wifiSSID = "";
-String wifiPass = "";
-short hours = 0;
-uint8_t color = 0;
-bool wifiConnected = false;
-bool timeSetup = false;
+String wifiSSID = "";        // SSID of the Wi-Fi network (Set by EEPROM)
+String wifiPass = "";        // Password of the Wi-Fi network (Set by EEPROM)
+short hours = 0;             // The real time hour number
+uint8_t color = 0;           // The color corresponding to the current hour
+uint8_t oldColor = 0;        // The color that was chosen on the previous iteration
+bool wifiConnected = false;  // Flag of successful Wi-Fi connection
+bool timeSetup = false;      // Flag of configured time from NTP server
+
 DhtSensor dht(DHTPIN, DHTTYPE);
 DallasSensor dallas(WTEMP);
 GenericSensor wlevel(WLEVEL, true);
@@ -80,6 +85,7 @@ unsigned long lastReconnection = 0;  // Last relative time attepting reconnectio
 unsigned long lastRead = 0;          // Last relative time reading sensors
 unsigned long lastDataSend = 0;      // Last relative time sending data
 unsigned long lastTimeUpdt = 0;      // Last relative time reading real time
+unsigned long lastColorUpdt = 0;     // Last relative time updating NeoPixel colors
 
 // Subroutines
 float analogPercentage(int value) {
@@ -88,12 +94,20 @@ float analogPercentage(int value) {
 
 int getHours() {
   struct tm timeInfo;
-  if (getLocalTime(&timeInfo)) {
-    char sec[3];
-    strftime(sec, sizeof(sec), "%S", &timeInfo);
-    return String(sec).toInt();
-  }
-  return -1;
+  if (!getLocalTime(&timeInfo)) return -1;
+
+  char hour[3];
+  strftime(hour, sizeof(hour), "%H", &timeInfo);
+  return String(hour).toInt();
+}
+
+int getColor(int hour) {
+  if (hour < COLOR_TIMES[0]) return 0;
+  else if (hour < COLOR_TIMES[1]) return 1;
+  else if (hour < COLOR_TIMES[2]) return 2;
+  else if (hour < COLOR_TIMES[3]) return 3;
+  else if (hour < COLOR_TIMES[4]) return 4;
+  else return 0;
 }
 
 void printData() {
@@ -133,7 +147,7 @@ void setup() {
   pixel1.begin(50);
   pixel2.begin(50);
 
-  // WiFi
+  // Wi-Fi
   EEPROM.get(0, wifiSSID);
   EEPROM.get(sizeof(wifiSSID), wifiPass);
   Serial.println("Using Credentials: " + wifiSSID + " :: " + wifiPass);
@@ -145,9 +159,10 @@ void setup() {
 void loop() {
   currTime = millis();
 
-  // Reconnect WiFi
+  // Track Wi-Fi connection
   wifiConnected = WiFi.status() == WL_CONNECTED;
   if (wifiConnected) {
+    // Connect to InfluxDB once
     if (!influx.connected) influx.connect(TZ_INFO);
     lastConnected = currTime;
   }
@@ -159,22 +174,24 @@ void loop() {
     ap.begin();
   }
 
-  if (!timeSetup) {
+  // Config time once
+  if (!timeSetup && wifiConnected) {
+    Serial.println("[CONFIG TIME]");
     configTime(GMT_OFFSET, DAYLIGHT_OFFSET, NTP_SERVER);
     timeSetup = true;
   }
 
-  // Toggle NeoPixels' colors depending on the hour of the day  
+  // Update time
   if (currTime - lastTimeUpdt >= TIME_UPDT_TIMEOUT && wifiConnected) {
-    Serial.println("[LEDS]");
+    Serial.println("[UPDATE_TIME]");
     hours = getHours();
-    int oldColor = color;
-    Serial.println(hours);
-    if (hours <= 6 || hours >= 21) color = 0; // OFF
-    else if (hours < 10) color = 1; // #FFF, #00F
-    else if (hours < 14) color = 2;
-    else if (hours < 18) color = 3;
-    else if (hours < 21) color = 4;
+    lastTimeUpdt = currTime;
+  }
+
+  // Update the NeoPixel colors
+  if (currTime - lastColorUpdt >= TIME_UPDT_TIMEOUT) {
+    oldColor = color;
+    color = getColor(hours);
 
     if (color != oldColor) {
       pixel1.configColor(COLORS[color]);
@@ -183,12 +200,12 @@ void loop() {
 
     pixel1.show();
     pixel2.show();
-    lastTimeUpdt = currTime;
+    lastColorUpdt = currTime;
   }
 
   // Update the sensor readings
   if (currTime - lastRead >= READ_TIMEOUT) {
-    Serial.println("Reading sensors...");
+    Serial.println("[SENSORS]");
     dht.readSensor(0b11);
     dallas.readSensor();
     wlevel.readSensor();
