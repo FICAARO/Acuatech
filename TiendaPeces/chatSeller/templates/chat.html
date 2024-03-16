@@ -1,0 +1,13 @@
+{% extends "template.html" %}
+{% block content %}
+ 
+
+ {{chatmsg}}
+ 
+<form action = "" method = "get">
+    <label for="chat">Send your message: </label>
+    <input id="message" type="text" name="message">
+    <input type="submit" value="OK">
+</form>
+
+{% endblock %}
