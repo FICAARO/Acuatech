@@ -3,6 +3,10 @@
 
 healthcam, do it pretty
 
-
+<form method="POST" enctype="multipart/from-data">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<input type="submit" name="Submit">
+</form>
 
 {% endblock %}

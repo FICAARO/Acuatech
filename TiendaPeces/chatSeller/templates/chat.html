@@ -4,7 +4,9 @@
 
  {{chatmsg}}
  
-<form action = "" method = "get">
+<form action = "" method = "POST">
+	    {% csrf_token %} 
+
     <label for="chat">Send your message: </label>
     <input id="message" type="text" name="message">
     <input type="submit" value="OK">
