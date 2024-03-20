@@ -22,7 +22,7 @@
 #define THERMOSTAT 4  // Thermostat actuator (D4)
 #define FILTERS 5     // Filters actuator (D5)
 #define DHTPIN 13     // DHT11 sensor (D13)
-#define LIGHTS 16     // Lights actuator (D16)
+#define LIGHTS 15     // Lights actuator (D15)
 #define WTEMP 32      // Water temperature sensor (A4)
 #define TURBIDITY 34  // Turbidity sensor (A6)
 #define WLEVEL 35     // Water level sensor (A7)
@@ -51,6 +51,7 @@ const char* AP_PASS = "CUSTOM_PASSWORD";  // Password of the access point Wi-Fi 
 #define PIXELS1 12         // Amount of pixels in Neopixel strip 1
 #define PIXELS2 24         // Amount of pixels in Neopixel strip 2
 
+uint8_t FEED_TIMES[3] = { 7, 14, 21 };
 uint8_t COLOR_TIMES[5] = { 7, 10, 14, 18, 21 };  // TODO: Make configurable
 uint8_t COLORS[5][8] = {
   {   0,   0,   0,   0,   0,   0,   0, 0 },
@@ -64,8 +65,11 @@ uint8_t COLORS[5][8] = {
 String wifiSSID = "";        // SSID of the Wi-Fi network (Set by EEPROM)
 String wifiPass = "";        // Password of the Wi-Fi network (Set by EEPROM)
 short hours = 0;             // The real time hour number
-uint8_t color = 0;           // The color corresponding to the current hour
-uint8_t oldColor = 0;        // The color that was chosen on the previous iteration
+short oldHours = 0;
+uint8_t color = -1;           // The color corresponding to the current hour
+uint8_t oldColor = -1;        // The color that was chosen on the previous iteration
+uint8_t feed = -1;
+uint8_t oldFeed = -1;
 bool wifiConnected = false;  // Flag of successful Wi-Fi connection
 bool timeSetup = false;      // Flag of configured time from NTP server
 
@@ -86,6 +90,7 @@ unsigned long lastRead = 0;          // Last relative time reading sensors
 unsigned long lastDataSend = 0;      // Last relative time sending data
 unsigned long lastTimeUpdt = 0;      // Last relative time reading real time
 unsigned long lastColorUpdt = 0;     // Last relative time updating NeoPixel colors
+unsigned long lastFeedUpdt = 0;
 
 // Subroutines
 float analogPercentage(int value) {
@@ -97,7 +102,7 @@ int getHours() {
   if (!getLocalTime(&timeInfo)) return -1;
 
   char hour[3];
-  strftime(hour, sizeof(hour), "%H", &timeInfo);
+  strftime(hour, sizeof(hour), "%S", &timeInfo);
   return String(hour).toInt();
 }
 
@@ -107,6 +112,13 @@ int getColor(int hour) {
   else if (hour < COLOR_TIMES[2]) return 2;
   else if (hour < COLOR_TIMES[3]) return 3;
   else if (hour < COLOR_TIMES[4]) return 4;
+  else return 0;
+}
+
+int getFeed(int hour) {
+  if (hour < FEED_TIMES[0]) return 0;
+  else if (hour < FEED_TIMES[1]) return 1;
+  else if (hour < FEED_TIMES[2]) return 2;
   else return 0;
 }
 
@@ -163,7 +175,7 @@ void loop() {
   wifiConnected = WiFi.status() == WL_CONNECTED;
   if (wifiConnected) {
     // Connect to InfluxDB once
-    if (!influx.connected) influx.connect(TZ_INFO);
+    // if (!influx.connected) influx.connect(TZ_INFO);
     lastConnected = currTime;
   }
 
@@ -178,21 +190,31 @@ void loop() {
   if (!timeSetup && wifiConnected) {
     Serial.println("[CONFIG TIME]");
     configTime(GMT_OFFSET, DAYLIGHT_OFFSET, NTP_SERVER);
+    hours = getHours();
+    oldHours = hours;
+    feed = getFeed(hours);
+    oldFeed = feed;
     timeSetup = true;
   }
 
   // Update time
-  if (currTime - lastTimeUpdt >= TIME_UPDT_TIMEOUT && wifiConnected) {
+  if (currTime - lastTimeUpdt >= TIME_UPDT_TIMEOUT) {
     Serial.println("[UPDATE_TIME]");
+    oldHours = hours;
     hours = getHours();
     lastTimeUpdt = currTime;
   }
 
   // Update the NeoPixel colors
   if (currTime - lastColorUpdt >= TIME_UPDT_TIMEOUT) {
+    Serial.println("[LEDS]");
     oldColor = color;
     color = getColor(hours);
 
+    Serial.println(hours);
+    Serial.print(color);
+    Serial.print(" :: ");
+    Serial.println(oldColor);
     if (color != oldColor) {
       pixel1.configColor(COLORS[color]);
       pixel2.configColor(COLORS[color]);
@@ -201,6 +223,21 @@ void loop() {
     pixel1.show();
     pixel2.show();
     lastColorUpdt = currTime;
+  }
+
+  // Trigger the servo if the time passes a new feeding time
+  if (currTime - lastFeedUpdt >= TIME_UPDT_TIMEOUT) {
+    Serial.println("[FEED]");
+    oldFeed = feed;
+    feed = getFeed(hours);
+
+    Serial.print(feed);
+    Serial.print(" :: ");
+    Serial.println(oldFeed);
+
+    if (feed != oldFeed) digitalWrite(BUILTIN_LED, HIGH);
+    else digitalWrite(BUILTIN_LED, LOW);
+    lastFeedUpdt = currTime;
   }
 
   // Update the sensor readings
