@@ -29,7 +29,7 @@ urlpatterns = [
     path('autenticacion/',include('autenticacion.urls')),
     path('pedidos/',include('pedidos.urls')),
     path('fishtank3d/',include('fishtank3d.urls')),
-    path('chatSeller/',include('chatSeller.urls')),
+    path('chatSupport/',include('chatSeller.urls')),
     path('healthcam/',include('healthcam.urls')),
 
     #path('index/', TiendaPecesWebApp.views.site.index,name="index")

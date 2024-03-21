@@ -13,7 +13,14 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+import keras
+import numpy as np
+from keras import backend as K
+import tensorflow as tf
+from tensorflow.python.keras.backend import set_session
+from keras.applications import vgg16
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -26,7 +33,7 @@ SECRET_KEY = 'django-insecure--^ylu+-(ed*v6j#4=)vq^t67m$15y)hv6@@oxvn@2(nc9%_r4k
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.ngrok.io']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.ngrok.io','d6c3-2800-484-1d81-2200-d6a8-21b9-bea1-36a3.ngrok-free.app',]
 
 
 # Application definition
@@ -130,8 +137,28 @@ USE_TZ = True
 STATIC_URL = 'static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')#maybe it breaks the code
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+
+
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_HTTPONLY = False
+CSRF_USE_SESSIONS = False
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        # Add other authentication classes here
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+        # Add other permission classes here
+    ),
+}
+
+
