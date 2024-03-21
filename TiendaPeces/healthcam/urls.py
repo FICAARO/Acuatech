@@ -22,8 +22,4 @@ from healthcam.views import *
 
 urlpatterns = [
     path('', healthcamIndex,name="healthcam"),
-    path('2', healthcamIndex2,name="healthcam"),
-    path('diagnosis', diagnosis,name="diagnosis"),
-
-    re_path(r'^.*/$', diagnosis), 
 ]

@@ -1,26 +1,23 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from .forms import healthcam
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
 import tensorflow as tf
-import os
 from django.shortcuts import render
-from django.http import JsonResponse
-import base64
-from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.conf import settings 
 from tensorflow.python.keras.backend import set_session
 from keras.preprocessing.image import load_img
 from keras.preprocessing.image import img_to_array
-from keras.applications.imagenet_utils import decode_predictions
-import matplotlib.pyplot as plt
-import numpy as np
-import datetime
-import traceback
-
+from rembg import remove 
+from PIL import Image 
+import os
+def remove_background(input_path,output_path):
+    print(os.getcwd())
+    input_img = Image.open(input_path) 
+    output_img = remove(input_img).convert('RGB')
+    output_img.save(output_path) 
 
 def predict_image_class(image_path):
     target_size_square=256
@@ -45,13 +42,18 @@ def predict_image_class(image_path):
 
 
 
-def healthcamIndex2(request):
+def healthcamIndex(request):
     if  request.method == "POST":
         f=request.FILES['sentFile'] # here you get the files needed
         response = {}
         file_name = "fishdiases/pic.jpg"
-        file_name_2 = default_storage.save(file_name, f)
-        file_url = default_storage.url(file_name_2)
+        file_name_rbg = "fishdiases/pic_rbg.jpg"
+
+        file_name_2 = "media/"+default_storage.save(file_name, f)
+        print(file_name_2)
+        remove_background(file_name_2,"media/"+file_name_rbg)
+        file_url = default_storage.url(file_name_rbg)
+
         print(file_url[1:])
         #original = load_img(file_url[1:], target_size=(224, 224))
         #numpy_image = img_to_array(original)
