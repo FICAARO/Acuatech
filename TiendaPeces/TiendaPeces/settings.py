@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'fishtank3d',
     'chatSeller',
     'healthcam',
+    'map_fishtanks',
     #'phonenumber_field',
 ]
 

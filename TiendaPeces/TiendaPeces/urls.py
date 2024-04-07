@@ -31,6 +31,7 @@ urlpatterns = [
     path('fishtank3d/',include('fishtank3d.urls')),
     path('chatSupport/',include('chatSeller.urls')),
     path('healthcam/',include('healthcam.urls')),
+    path('fishtanks_map/',include('map_fishtanks.urls')),
 
     #path('index/', TiendaPecesWebApp.views.site.index,name="index")
 ]
