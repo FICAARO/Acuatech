@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_99e0c948bcb0af0b9c7a693aab574895 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_99e0c948bcb0af0b9c7a693aab574895" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_99e0c948bcb0af0b9c7a693aab574895 = L.map(
+                "map_99e0c948bcb0af0b9c7a693aab574895",
+                {
+                    center: [6.256405968932449, -75.59835591123756],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 10,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_c7ba200585af49ad52795db7d395308b = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors", "detectRetina": false, "maxNativeZoom": 19, "maxZoom": 19, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            );
+        
+    
+            tile_layer_c7ba200585af49ad52795db7d395308b.addTo(map_99e0c948bcb0af0b9c7a693aab574895);
+        
+    
+            var marker_e7c3e2813af9d0036d28638bcfe2c45b = L.marker(
+                [6.221826, -75.57086],
+                {}
+            ).addTo(map_99e0c948bcb0af0b9c7a693aab574895);
+        
+    
+        var popup_0f952de5f30482d13b3ad9f61374cf95 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_5bc58ac1512d08885f9f13161357938f = $(`<div id="html_5bc58ac1512d08885f9f13161357938f" style="width: 100.0%; height: 100.0%;">pecera<li>pecera.com</li><br></div>`)[0];
+                popup_0f952de5f30482d13b3ad9f61374cf95.setContent(html_5bc58ac1512d08885f9f13161357938f);
+            
+        
+
+        marker_e7c3e2813af9d0036d28638bcfe2c45b.bindPopup(popup_0f952de5f30482d13b3ad9f61374cf95)
+        ;
+
+        
+    
+    
+            marker_e7c3e2813af9d0036d28638bcfe2c45b.bindTooltip(
+                `<div>
+                     pecera
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_ec138f197e162d6371e4eb84bdf51e6a = L.marker(
+                [6.221826, -75.57086],
+                {}
+            ).addTo(map_99e0c948bcb0af0b9c7a693aab574895);
+        
+    
+        var popup_99b2deca9bd4e0084dae90d7b1326a04 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_1dd23b0512456e3a89ccec75cee7bef3 = $(`<div id="html_1dd23b0512456e3a89ccec75cee7bef3" style="width: 100.0%; height: 100.0%;">pecera<li>pecera.com</li><br></div>`)[0];
+                popup_99b2deca9bd4e0084dae90d7b1326a04.setContent(html_1dd23b0512456e3a89ccec75cee7bef3);
+            
+        
+
+        marker_ec138f197e162d6371e4eb84bdf51e6a.bindPopup(popup_99b2deca9bd4e0084dae90d7b1326a04)
+        ;
+
+        
+    
+    
+            marker_ec138f197e162d6371e4eb84bdf51e6a.bindTooltip(
+                `<div>
+                     pecera
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_65865fde44d8322f0b55e28657aacf32 = L.marker(
+                [6.221826, -75.57086],
+                {}
+            ).addTo(map_99e0c948bcb0af0b9c7a693aab574895);
+        
+    
+        var popup_1e27ce99b5a6970a871e161d30f6ad3c = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_9b260113ddfcef1d3172834b879929d2 = $(`<div id="html_9b260113ddfcef1d3172834b879929d2" style="width: 100.0%; height: 100.0%;">pecera<li>pecera.com</li><br></div>`)[0];
+                popup_1e27ce99b5a6970a871e161d30f6ad3c.setContent(html_9b260113ddfcef1d3172834b879929d2);
+            
+        
+
+        marker_65865fde44d8322f0b55e28657aacf32.bindPopup(popup_1e27ce99b5a6970a871e161d30f6ad3c)
+        ;
+
+        
+    
+    
+            marker_65865fde44d8322f0b55e28657aacf32.bindTooltip(
+                `<div>
+                     pecera
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_97749781920fd4d6ba4b9f823bba3bea = L.marker(
+                [6.221826, -75.57086],
+                {}
+            ).addTo(map_99e0c948bcb0af0b9c7a693aab574895);
+        
+    
+        var popup_1cf2c6cd62ad3865a9cc21ad9c6dadcc = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_90aed4b73546882536c86453b4a3cf2d = $(`<div id="html_90aed4b73546882536c86453b4a3cf2d" style="width: 100.0%; height: 100.0%;">pecera<li>pecera.com</li><br></div>`)[0];
+                popup_1cf2c6cd62ad3865a9cc21ad9c6dadcc.setContent(html_90aed4b73546882536c86453b4a3cf2d);
+            
+        
+
+        marker_97749781920fd4d6ba4b9f823bba3bea.bindPopup(popup_1cf2c6cd62ad3865a9cc21ad9c6dadcc)
+        ;
+
+        
+    
+    
+            marker_97749781920fd4d6ba4b9f823bba3bea.bindTooltip(
+                `<div>
+                     pecera
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_89aea414a95dcf6bd0070e4dd946d30e = L.marker(
+                [6.221826, -75.57086],
+                {}
+            ).addTo(map_99e0c948bcb0af0b9c7a693aab574895);
+        
+    
+        var popup_8a59a6619dcaef9589425c95b9c7e037 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_e413a42e57ac24e71e5ad85b4580fe05 = $(`<div id="html_e413a42e57ac24e71e5ad85b4580fe05" style="width: 100.0%; height: 100.0%;">pecera<li>pecera.com</li><br></div>`)[0];
+                popup_8a59a6619dcaef9589425c95b9c7e037.setContent(html_e413a42e57ac24e71e5ad85b4580fe05);
+            
+        
+
+        marker_89aea414a95dcf6bd0070e4dd946d30e.bindPopup(popup_8a59a6619dcaef9589425c95b9c7e037)
+        ;
+
+        
+    
+    
+            marker_89aea414a95dcf6bd0070e4dd946d30e.bindTooltip(
+                `<div>
+                     pecera
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_0242a439c811b985b2f2806633f7238e = L.marker(
+                [6.221899, -75.57086],
+                {}
+            ).addTo(map_99e0c948bcb0af0b9c7a693aab574895);
+        
+    
+        var popup_5504c2805ff3eb5b98ea9f7373be5cb8 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_8b12af073a13277ff30ef427bdc6d57a = $(`<div id="html_8b12af073a13277ff30ef427bdc6d57a" style="width: 100.0%; height: 100.0%;">pecera34<li>pecera.com</li><br></div>`)[0];
+                popup_5504c2805ff3eb5b98ea9f7373be5cb8.setContent(html_8b12af073a13277ff30ef427bdc6d57a);
+            
+        
+
+        marker_0242a439c811b985b2f2806633f7238e.bindPopup(popup_5504c2805ff3eb5b98ea9f7373be5cb8)
+        ;
+
+        
+    
+    
+            marker_0242a439c811b985b2f2806633f7238e.bindTooltip(
+                `<div>
+                     pecera34
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_74e14503df8f9357a7a45901b1a2c6e6 = L.marker(
+                [6.231826, -75.57086],
+                {}
+            ).addTo(map_99e0c948bcb0af0b9c7a693aab574895);
+        
+    
+        var popup_1a534a76c561c29fff3eca2255cd7705 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_472439e61be6faf406ae355765499343 = $(`<div id="html_472439e61be6faf406ae355765499343" style="width: 100.0%; height: 100.0%;">pecerotas<li>dash.com</li><br></div>`)[0];
+                popup_1a534a76c561c29fff3eca2255cd7705.setContent(html_472439e61be6faf406ae355765499343);
+            
+        
+
+        marker_74e14503df8f9357a7a45901b1a2c6e6.bindPopup(popup_1a534a76c561c29fff3eca2255cd7705)
+        ;
+
+        
+    
+    
+            marker_74e14503df8f9357a7a45901b1a2c6e6.bindTooltip(
+                `<div>
+                     pecerotas
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_d0c6534aa493f21a61718f60a6c0bcf6 = L.marker(
+                [6.321826, -75.51],
+                {}
+            ).addTo(map_99e0c948bcb0af0b9c7a693aab574895);
+        
+    
+        var popup_f148c1648147905b54a57097cec05140 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_5b97af2a161e9ea40943723fee2cb23b = $(`<div id="html_5b97af2a161e9ea40943723fee2cb23b" style="width: 100.0%; height: 100.0%;">pecera caremonda<li>influxdb.com</li><br></div>`)[0];
+                popup_f148c1648147905b54a57097cec05140.setContent(html_5b97af2a161e9ea40943723fee2cb23b);
+            
+        
+
+        marker_d0c6534aa493f21a61718f60a6c0bcf6.bindPopup(popup_f148c1648147905b54a57097cec05140)
+        ;
+
+        
+    
+    
+            marker_d0c6534aa493f21a61718f60a6c0bcf6.bindTooltip(
+                `<div>
+                     pecera caremonda
+                 </div>`,
+                {"sticky": true}
+            );
+        
+</script>
+</html>

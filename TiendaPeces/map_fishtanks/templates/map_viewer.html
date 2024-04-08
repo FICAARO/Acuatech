@@ -1,7 +1,10 @@
-{% extends  'template.html'%}
-{% block content %} 
+{% extends 'template.html' %}
+{% block content %}
 
-<iframe src="/fishtanks_map/map"  class="embed-responsive-item" style="width:1px; min-width:100%; border-width: 0px; height: 100%" allowtransparency="true" ></iframe>
+<div style="width: 100%; height: 500px; border: 2px solid #ccc; border-radius: 5px; overflow: hidden;">
+    <iframe src="/fishtanks_map/map/" class="embed-responsive-item" style="width: 100%; height: 100%; border: none;" allowtransparency="true"></iframe>
+</div>
 
-<a href="/fishtanks_map/addData">añade tu pecera</a>
-{% endblock  %}
+<a href="/fishtanks_map/addData" style="display: block; margin-top: 10px;">Añade tu pecera</a>
+
+{% endblock %}
