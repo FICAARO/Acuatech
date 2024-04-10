@@ -3,3 +3,9 @@ django
 django-crispy-forms
 crispy_bootstrap4
 Pillow
+folium
+keras
+tensorflow
+llama-cpp-python
+rembg
+pandas
