@@ -91,27 +91,28 @@
   <div class="collapse navbar-collapse" id="navbarText">
     <ul class="navbar-nav mx-auto">
       <li class="nav-item px-lg-4">
-        <button class="btn btn-primary"><a class="nav-link {% if request.path == 'tienda/peces/' %}disabled{% endif %}" href="/tienda/peces/">Peces
-          </a></button>
+        <a class="nav-link {% if request.path == 'tienda/peces/' %}disabled{% endif %}" href="/tienda/peces/">Peces
+          </a>
       </li>
       <li class="nav-item px-lg-4">
-        <button class="btn btn-primary"><a class="nav-link {% if request.path == 'tienda/productos/' %}disabled{% endif %}" href="/tienda/productos/">Productos</a></button>
+        <a class="nav-link {% if request.path == 'tienda/productos/' %}disabled{% endif %}" href="/tienda/productos/">Productos</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Herramientas
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="/healthcam">Healthcam</a>
-          <a class="dropdown-item" href="/chatSupport">Support chat</a>
-          <a class="dropdown-item" href="/fishtank3d">Personalized fishtank</a>
+          <a class="dropdown-item" href="/healthcam">Detector de enfermedades de peces</a>
+          <a class="dropdown-item" href="/chatSupport">Chat de soporte</a>
+          <a class="dropdown-item" href="/fishtank3d">Encarga tu Acuario</a>
+          <a class="dropdown-item" href="/fishtanks_map">Mapa de peceras</a>
         </div>
       </li>
       <li class="nav-item px-lg-4">
-        <button class="btn btn-primary"><a class="nav-link {% if request.path == '/contacto/' %}disabled{% endif %}" href="/contacto/">Contacto</a></button>
+        <a class="nav-link {% if request.path == '/contacto/' %}disabled{% endif %}" href="/contacto/">Contacto</a>
       </li>
       <li class="nav-item px-lg-4">
-        <button class="btn btn-primary"><a class="nav-link {% if request.path == '/contacto/' %}disabled{% endif %}" href="/contacto/"></a></button>
+        <a class="nav-link {% if request.path == '/contacto/' %}disabled{% endif %}" href="/contacto/"></a>
       </li>
 
     </ul>

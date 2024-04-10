@@ -5,33 +5,100 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h3>
-<form method="post" action="" style="color: gray;">
 
 
-    {% csrf_token %} 
 
-    <div style="width: 75%; margin: auto;">
+<style type="text/css">
+        .content {
+            width: 100%; /* Ocupa todo el ancho */
+            text-align: center; /* Centra el texto horizontalmente */
+        }
 
-        {% if messages %}
+        .custom-button {
+            font-size: 1.10rem; /* Tamaño de fuente */
+            padding: 10px 20px; /* Padding para aumentar el tamaño del botón */
+            background-color: #0A506C; /* Color de fondo azul */
+            border-color: #0A506C; /* Color del borde */
+            margin: 40px; /* Espaciado entre los botones */
+            color: #ffffff; /* Color de texto blanco */
+            font-family: "Segoe UI";
+            border-radius: 10px;
+        }
+        .content-container {
+            background-color: rgba(255, 255, 255, 0.5); /* Color de fondo blanco con transparencia */
+            padding: 70px; /* Espacio interno para el contenido */
+            border-radius: 10px; /* Bordes redondeados */
+            width: 80%;
+            color: #052C42;
+        }
 
-        {% for mensaje in messages %} 
+        .container-fluid {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-        <span class="alert alert-{{mensaje.tags}}">  {{mensaje}}  </span>     
+        /* Estilos para alinear a la izquierda correo y contraseña */
+        .input-group {
+            text-align: left;
+        }
+
+        .form-label {
+            text-align: left;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.2rem; /* Tamaño de fuente */
+        }
+
+        /* Espaciado entre el campo de correo electrónico y contraseña */
+        #inputEmail {
+            margin-bottom: 10px;
+            font-size: 1 rem; /* Tamaño de fuente */
+            padding: 15px; /* Aumenta el tamaño del campo de entrada */
+            border-radius: 10px;
+            width: 90%; /* Hace el campo de entrada más largo */
+        }
+
+        #inputPassword {
+            font-size: 1 rem; /* Tamaño de fuente */
+            padding: 15px; /* Aumenta el tamaño del campo de entrada */
+            border-radius: 10px;
+            width: 90%; /* Hace el campo de entrada más largo */
+        }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 content text-white">
+            <div class="content-container"> <!-- Contenedor blanco -->
+                <form method="post" action="">
+                    <h1 class="h3 mb-3 font-weight-normal text-center">Inicia Sesión</h1>
+                    {% csrf_token %} 
+                    {% if messages %}
+                    {% for mensaje in messages %} 
+                    <span class="alert alert-{{mensaje.tags}}">  {{mensaje}}  </span>     
+                    {% endfor %}
 
 
-        {% endfor %}
- 
 
-        {% endif %}
-        <br/><br/><br/>
-    {{form|crispy}}
-
-    <button type="submit" class="btn btn-success">Login</button>
+                    {% endif %}
+                    {{form|crispy}}
+                    <button class="custom-button" type="submit">Iniciar sesión</button>
+                    <p class="mt-5 mb-3 text-center">¿No tienes cuenta? <a href="../signup/">Crear cuenta</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 </div>
 
 
 </form>
+
 </h3>
+
+
+
 {% endblock %}
