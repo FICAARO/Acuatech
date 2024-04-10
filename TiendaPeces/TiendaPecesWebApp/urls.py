@@ -21,6 +21,7 @@ from TiendaPecesWebApp.views import *
 urlpatterns = [
     path('', index,name="index"),
     path('index/', index,name="index"),
-    path('contacto/', contact,name="contact")
+    path('contacto/', contact,name="contact"),
+    path('servicios/', servicios,name="servicios")
 
 ]
