@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'chatSeller',
     'healthcam',
     'map_fishtanks',
+    'dashboard',
     #'phonenumber_field',
 ]
 

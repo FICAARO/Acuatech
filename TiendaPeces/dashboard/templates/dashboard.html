@@ -1,0 +1,415 @@
+{% extends "template.html" %}
+<!--  -->
+{% block scripts %}
+<script type="module" defer>
+  let lights, filter, thermo;
+  /**
+   * @param {string} id
+   * @returns {Element}
+   */
+  const get = (id) => document.querySelector(id);
+
+  const w = {
+    temp: { v: get("#temp"), m: get(".widget:has(#temp) .meter-bar") },
+    hum: { v: get("#hum"), m: get(".widget:has(#hum) .needle") },
+    wtemp: { v: get("#wtemp"), m: get(".widget:has(#wtemp) .meter-bar") },
+    wlevel: { v: get("#wlevel"), m: get(".widget:has(#wlevel) .water") },
+    turbp: { v: get("#turbp"), m: get(".widget:has(#turbp) .needle") },
+    filter: get("#filter"),
+    lights: get("#lights"),
+    thermo: get("#thermo"),
+  };
+
+  /**
+   * Get a cookie's value by name
+   * @param {string} name
+   */
+  function getCookie(name) {
+    const parts = `; ${document.cookie}`.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+  }
+  /**
+   * Linearly interpolate a value to a different range
+   * @param {number} x
+   * @param {number} inMin
+   * @param {number} inMax
+   * @param {number} outMin
+   * @param {number} outMax
+   */
+  const map = (x, inMin, inMax, outMin, outMax) =>
+    ((x - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+  /**
+   * GET and POST the dashboard data to the backend
+   * @param {boolean} skip
+   */
+  async function manageData(skip) {
+    const csrftoken = getCookie("csrftoken");
+    if (!skip)
+      await fetch("/dashboard/data/", {
+        method: "POST",
+        body: JSON.stringify({ lights, filter, thermo }),
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken,
+        },
+      });
+
+    const res = await fetch("/dashboard/data/");
+    const data = await res.json();
+    lights = data.lights || 0;
+    filter = data.filter || 0;
+    thermo = data.thermo || 0;
+    return data;
+  }
+  /**
+   * Put the response from the backend into the dashboard
+   * @param {Object} data
+   */
+  function updateDashboard(data) {
+    const {
+      temp = 0,
+      hum = 0,
+      wtemp = 0,
+      wlevel = 0,
+      tubp = 0,
+      filter = 0,
+      lights = 0,
+      thermo = 0,
+    } = data;
+
+    w.temp.v.textContent = `${temp} °C`;
+    w.temp.m.style.height = `calc(${map(temp, 0, 50, 0, 100)}% - 1rem)`;
+
+    w.hum.v.textContent = `${hum}%`;
+    w.hum.m.style.transform = `rotate(${map(hum, 0, 100, 45, 315)}deg)`;
+
+    w.wtemp.v.textContent = `${wtemp} °C`;
+    w.wtemp.m.style.height = `calc(${map(wtemp, 0, 50, 0, 100)}% - 1rem)`;
+
+    w.wlevel.v.textContent = `${wlevel}%`;
+    w.wlevel.m.style.height = `calc(${map(wtemp, 0, 100, 0, 100)}% - 1rem)`;
+
+    w.turbp.v.textContent = `${tubp}%`;
+    w.turbp.m.style.transform = `rotate(${map(tubp, 0, 100, 45, 315)}deg)`;
+
+    w.filter.classList.toggle("on", filter == 1)
+    w.lights.classList.toggle("on", lights == 1)
+    w.thermo.classList.toggle("on", thermo == 1)
+  }
+
+  manageData(true).then(updateDashboard);
+  setInterval(() => manageData().then(updateDashboard), 5000);
+
+  w.lights.addEventListener("click", () => {
+    lights ^= 1;
+    w.lights.classList.toggle("on", lights == 1);
+  });
+  w.filter.addEventListener("click", () => {
+    filter ^= 1;
+    w.filter.classList.toggle("on", filter == 1);
+  });
+  w.thermo.addEventListener("click", () => {
+    thermo ^= 1;
+    w.thermo.classList.toggle("on", thermo == 1);
+  });
+</script>
+{% endblock scripts %}
+<!--  -->
+{% block content %}
+<style>
+  main {
+    display: flex;
+    flex-direction: column;
+  }
+  .dashboard-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    height: 100%;
+  }
+  .dashboard-wrapper * {
+    box-sizing: border-box;
+  }
+  .dashboard-wrapper > div {
+    display: flex;
+    flex: 1 1 0;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1rem;
+    background-color: hsl(0, 0%, 100%, 80%);
+    border-radius: 10px;
+  }
+  .dashboard-wrapper > .sensors-wrapper {
+    flex-grow: 4;
+  }
+  .widget {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    padding: 0.5rem;
+    min-width: 17rem;
+    background-color: white;
+    border-radius: 10px;
+  }
+  .widget-title {
+    flex: 0 0 auto;
+    padding-bottom: 0.125rem;
+    border-bottom: 1px solid #052c42;
+    font-weight: 500;
+  }
+  .widget > div {
+    flex: 1 1 0;
+    display: flex;
+  }
+  .thermometer > * {
+    flex: 1 1 0;
+  }
+  .widget-value {
+    display: flex;
+    margin: 0;
+    padding: 0 1rem;
+    height: 100%;
+    align-items: center;
+    font-size: 3rem;
+    font-weight: 700;
+  }
+  .shape-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    padding: 0.5rem;
+  }
+  .meter {
+    min-height: 10rem;
+  }
+  .thermometer .meter {
+    position: relative;
+    padding: 0.5rem;
+    width: 2rem;
+    height: 100%;
+    max-height: 15rem;
+    border-radius: 100vmax;
+    border: 0.25rem solid #a0a0a0;
+  }
+  .thermometer .meter .meter-bar {
+    position: absolute;
+    margin: 0.5rem;
+    bottom: 0;
+    left: 0;
+    width: calc(100% - 1rem);
+    height: calc(100% - 1rem);
+    border-radius: 100vmax;
+    transition: 100ms;
+  }
+  .thermometer:has(#temp) .meter-bar {
+    background-color: hsl(0 100% 65%);
+  }
+  .thermometer:has(#wtemp) .meter-bar {
+    background-color: hsl(210 100% 65%);
+  }
+  .widget .tank {
+    padding: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+  .tank .shape-wrapper {
+    position: relative;
+    min-width: 10rem;
+    height: 100%;
+    min-height: 10rem;
+    max-height: 12.5rem;
+    border: 0.25rem solid #a0a0a0;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    isolation: isolate;
+  }
+  .tank .water {
+    position: absolute;
+    bottom: 0.5rem;
+    width: calc(100% - 1rem);
+    max-height: calc(100% - 1rem);
+    background-color: hsl(210 100% 65%);
+    border-radius: 6px;
+    z-index: -1;
+  }
+  .tank .widget-value {
+    color: #052c42;
+  }
+  .shape-wrapper:has(#wlevel) {
+    align-items: center;
+    justify-content: center;
+  }
+  .gauge {
+    padding: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+  .gauge .shape-wrapper {
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    min-width: 13rem;
+    min-height: 13rem;
+    background-color: hsl(210 100% 65%);
+    border-radius: 100vmax;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .gauge:has(#turbp) .shape-wrapper {
+    background-color: hsl(30 100% 65%);
+  }
+  .gauge .shape-wrapper::before {
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 100%;
+    bottom: calc(-50% - 3.5rem);
+    background-color: white;
+    transform: rotate(45deg);
+    z-index: -1;
+  }
+  .gauge .needle {
+    position: absolute;
+    width: 1rem;
+    height: 100%;
+    border-radius: 10px;
+    transform: rotate(45deg);
+  }
+  .gauge .needle::before {
+    position: absolute;
+    content: "";
+    bottom: 0;
+    width: 100%;
+    height: 2rem;
+    background-color: #052c42;
+    border-radius: 100vmax;
+  }
+  .gauge .widget-value {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(100% - 3rem);
+    aspect-ratio: 1;
+    background-color: white;
+    border-radius: 100vmax;
+  }
+  .switch-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .switch {
+    cursor: pointer;
+    position: relative;
+    padding:2rem 5rem;
+    background-color: white;
+    border: .25rem solid #a0a0a0;
+    border-radius: 100vmax;
+    box-shadow: 0 0 0 #a0a0a0;
+    transition: 150ms;
+    isolation: isolate;
+  }
+  .switch:hover {
+    box-shadow: 0 0 10px #a0a0a0;
+  }
+  .switch::before {
+    position: absolute;
+    content: "";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: .25rem;
+    height: calc(100% - .5rem);
+    top: 0;
+    aspect-ratio: 1;
+    background-color: #a0a0a0;
+    border-radius: 100vmax;
+    font-weight: 900;
+    z-index: -1;
+  }
+  .switch.on::before {
+    content: "ON";
+    background-color: hsl(130, 80%, 65%);
+    right: 0;
+  }
+  .switch:not(.on)::before {
+    content: "OFF";
+    background-color: hsl(0 80% 65%);
+    left: 0;
+  }
+</style>
+
+<div class="dashboard-wrapper">
+  <div class="sensors-wrapper">
+    <div class="widget">
+      <h4 class="widget-title">Temperatura</h4>
+      <div class="thermometer">
+        <div class="shape-wrapper">
+          <div class="meter">
+            <div class="meter-bar"></div>
+          </div>
+        </div>
+        <p class="widget-value" id="temp"></p>
+      </div>
+    </div>
+    <div class="widget">
+      <h4 class="widget-title">Humedad</h4>
+      <div class="gauge">
+        <div class="shape-wrapper">
+          <div class="needle"></div>
+          <p class="widget-value" id="hum"></p>
+        </div>
+      </div>
+    </div>
+    <div class="widget">
+      <h4 class="widget-title">Temperatura Agua</h4>
+      <div class="thermometer">
+        <div class="shape-wrapper">
+          <div class="meter">
+            <div class="meter-bar"></div>
+          </div>
+        </div>
+        <p class="widget-value" id="wtemp"></p>
+      </div>
+    </div>
+    <div class="widget">
+      <h4 class="widget-title">Nivel Agua</h4>
+      <div class="tank">
+        <div class="shape-wrapper">
+          <div class="water"></div>
+          <p class="widget-value" id="wlevel"></p>
+        </div>
+      </div>
+    </div>
+    <div class="widget">
+      <h4 class="widget-title">Turbidez</h4>
+      <div class="gauge">
+        <div class="shape-wrapper">
+          <div class="needle"></div>
+          <p class="widget-value" id="turbp"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="actuators-wrapper">
+    <div class="widget">
+      <h4 class="widget-title">Filtro</h4>
+      <div class="switch-wrapper">
+        <button class="switch" id="filter"></button>
+      </div>
+    </div>
+    <div class="widget">
+      <h4 class="widget-title">Luces</h4>
+      <div class="switch-wrapper">
+        <button class="switch on" id="lights"></button>
+      </div>
+    </div>
+    <div class="widget">
+      <h4 class="widget-title">Termostato</h4>
+      <div class="switch-wrapper">
+        <button class="switch on" id="thermo"></button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

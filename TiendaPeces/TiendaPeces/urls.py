@@ -32,7 +32,7 @@ urlpatterns = [
     path('chatSupport/',include('chatSeller.urls')),
     path('healthcam/',include('healthcam.urls')),
     path('fishtanks_map/',include('map_fishtanks.urls')),
-
+    path('dashboard/', include('dashboard.urls')),
     #path('index/', TiendaPecesWebApp.views.site.index,name="index")
 ]
 
