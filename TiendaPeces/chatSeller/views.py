@@ -2,7 +2,20 @@ from django.shortcuts import render
 from llama_cpp import Llama
 import os
 
-# Create your views here.
+def webTranslate(txt,writeIn,translateTo):
+	"""
+	webTranslate(txt,writeIn,translateTo )
+	  - txt			  -text to trasnlate
+	  - writeIn		  -in which language is it written
+	  - translateTo	  -language to be translated
+	rember language prefix
+	en -> english
+	es -> spanish 
+	...
+	"""
+	from deep_translator import GoogleTranslator 
+	translatedTxt = GoogleTranslator(source=writeIn, target=translateTo).translate(txt)
+	return translatedTxt
 def chatSellerIndex(request):
 	role="""As a seasoned fish expert and passionate aquarist, I invite you to embark on an underwater journey where beauty meets functionality, and where every ripple tells a story of life and vitality. At our aquarium emporium, we offer a vast array of products designed to transform your aquatic dreams into stunning realities.
 
@@ -26,6 +39,7 @@ So why wait? Dive into the world of aquaria with us and discover the endless pos
 	print(os.getcwd())
 	answer=""
 	msg=request.POST.get("message")
+	msg=webTranslate(msg,"es","en")
 	print(msg)
 
 	if request.method == 'POST':
@@ -56,6 +70,6 @@ So why wait? Dive into the world of aquaria with us and discover the endless pos
 		    ]
 		)
 		answer=answer["choices"][0]["message"]["content"]
-
+		answer=webTranslate(answer,"en","es")
 		print(answer)
 	return render(request,"chat.html",{"chatmsg":answer})
