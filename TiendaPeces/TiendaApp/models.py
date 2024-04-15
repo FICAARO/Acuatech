@@ -25,6 +25,7 @@ class SubCategoriaProducto(models.Model):
 
 class Producto(models.Model):
 	nombre=models.CharField(max_length=50)
+	descripcion=models.CharField(max_length=250,null=True)
 	categorias=models.ForeignKey(CategoriaProducto,on_delete=models.CASCADE)
 	subCategoria=models.ForeignKey(SubCategoriaProducto,on_delete=models.CASCADE)
 	imagen=models.ImageField(upload_to="tienda",null=True,blank=True)
