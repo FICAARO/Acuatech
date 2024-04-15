@@ -14,3 +14,4 @@ tensorflow==2.16.1
 influxdb_client
 deep_translator
 google-generativeai
+python-dotenv
