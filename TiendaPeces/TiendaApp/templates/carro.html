@@ -1,8 +1,26 @@
 {% extends "templateshop.html" %}
 {% block content %}
+<style type="text/css">
+          .container-fluid {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+                .content-container {
+            background-color: rgba(255, 255, 255, 0.5); /* Color de fondo blanco con transparencia */
+            padding: 70px; /* Espacio interno para el contenido */
+            border-radius: 10px; /* Bordes redondeados */
+            width: 80%;
+            color: #052C42;
+        }
+</style>
+<div class="container-fluid">
+
 <div class="w-100 p-3">
   <div class="container mt-5 mb-5">
     <div class="d-flex justify-content-center row">
+      <div class="content-container">
     <h3></h3>
     <table class="table">
       <thead class="thead-dark">
@@ -55,7 +73,8 @@
     </a>
     <h3>Nesesitas <a href="/autenticacion/login">registrarte </a></h3>
     {% endif %}
-    </div>
+    </div></div>
+  </div>
   </div>
 </div>
 {% endblock %}

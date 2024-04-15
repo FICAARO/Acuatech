@@ -1,12 +1,33 @@
 {% extends "templateshop.html" %}
 {% block content %}
-<div class="w-75 p-3" >
+<!--div class="w-75 p-3" >
 	<div class="input-group">
 	  <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
 	  <button type="button" class="btn btn-outline-primary">search</button>
-	</div>
-{% for producto in productos %}
-<div class="w-100 p-3">
+</div-->
+
+<div class="container">
+    <h1 class="text-center mb-4">Productos</h1>
+    <div class="row">
+        {% for producto in productos %}
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <img src="{{producto.imagen.url}}" class="card-img-top" alt="{{producto.nombre}}">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{producto.nombre}}</h5>
+                    <p class="card-text">{{ producto.descripcion }}</p>
+                    <p class="card-text">Precio: ${{producto.precio}}</p>
+                </div>
+                <div class="d-flex flex-column mt-4"><a href="{% url 'carro:agregar' producto.id %}" class="btn btn-primary">Agregar al carro</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{# for producto in productos #}
+<!--div class="w-100 p-3">
 <div class="container mt-5 mb-5">
     <div class="d-flex justify-content-center row">
         <div class="col-md-10">
@@ -19,19 +40,20 @@
                     </div>
                     <div class="mt-1 mb-1 spec-1"></div>
                     <div class="mt-1 mb-1 spec-1"></div>
-                    <p class="text-justify text-truncate para mb-0"><!--Descripcion--><br><br></p>
+                    <p class="text-justify text-truncate para mb-0"><br><br></p>
                 </div>
                 <div class="align-items-center align-content-center col-md-3 border-left mt-1">
                     <div class="d-flex flex-row align-items-center">
                         <h4 class="mr-1">${{producto.precio}}</h4>
                     </div>
-                    <div class="d-flex flex-column mt-4"><a href="{% url 'carro:agregar' producto.id %}" class="btn btn-primary">Agregar al carro</a></div>
+                    <div class="d-flex flex-column mt-4"><a href="{# url 'carro:agregar' producto.id #}" class="btn btn-primary">Agregar al carro</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-</div>
+</div-->
 
-{% endfor %}
+{# endfor #}
 {% endblock %}
