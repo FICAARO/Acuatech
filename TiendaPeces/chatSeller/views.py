@@ -49,10 +49,16 @@ def mixtralinterface(msg,role):
 	answer=answer["choices"][0]["message"]["content"]
 	answer=webTranslate(answer,"en","es")
 	return answer
+def readtxtline(name):
+	"""
+	readtxtline(name), return frist line of file as string
+	"""
+	with open(name, 'r') as file:
+		return str(file.readline())
 def geminiChat(text,rol):
 	MODEL = 'gemini-pro'
 	print('** GenAI text: %r model & prompt %r\n' % (MODEL, text))
-	genai.configure(api_key="")
+	genai.configure(api_key=readtxtline("chatSeller/gemminitoken.txt"))
 	model = genai.GenerativeModel(MODEL)
 	response = model.generate_content("answer :"+text+" as a "+rol)
 	return response.text
