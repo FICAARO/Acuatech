@@ -1,11 +1,6 @@
 {% extends "template.html" %}
 {% block content %}
 
-<html lang="en">
-<head>
-<meta charset="UTF-8"> 
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script type="text/javascript">
 	class fishtank{
 	constructor() {
@@ -23,64 +18,89 @@
 		this.parrafo;
 	}
 rectangle(){
-	this.figura.innerHTML='rectagle';
-	document.getElementById('help').innerHTML = ""
-	litros=(this.entrada_lado_1.value*this.entrada_lado_2.value*this.entrada_lado_3.value)/1000;
-	this.litrostxt.innerHTML=litros+"  l";
-	this.litrostxt.value=litros
-	this.texto_lado1.innerHTML='large cm';
-	this.texto_lado2.innerHTML='heigth cm';
-	this.texto_lado3.innerHTML='width cm';
-	this.frameCount = this.frameCount+ this.vel;
-	rotateX(this.frameCount);
-  	rotateY(this.frameCount);
-	this.fishtank = box(this.entrada_lado_1.value ,this.entrada_lado_2.value ,this.entrada_lado_3.value ,0,0);
-	}	
-cubic(){
-	this.figura.innerHTML='cubic'
-	document.getElementById('help').innerHTML = ""
-	litros=(parseFloat(this.entrada_lado_1.value)**3)/1000;
-	this.litrostxt.innerHTML=litros+" l"
-	this.litrostxt.value=litros
-	this.texto_lado1.innerHTML='large cm '
-	this.texto_lado2.innerHTML='--NOT NEEDED--'
-	this.texto_lado3.innerHTML='--NOT NEEDED--'
-	this.frameCount = this.frameCount+ this.vel;
-	rotateX(this.frameCount);
-	rotateY(this.frameCount);
-	this.fishtank = box(this.l);
+    this.figura.innerHTML = 'rectagle';
+    document.getElementById('help').innerHTML = "";
+    let litros = (this.entrada_lado_1.value * this.entrada_lado_2.value * this.entrada_lado_3.value) / 1000;
+    this.litrostxt.innerHTML = litros + "  l";
+    this.litrostxt.value = litros;
+    this.texto_lado1.innerHTML = 'large cm';
+    this.texto_lado2.innerHTML = 'heigth cm';
+    this.texto_lado3.innerHTML = 'width cm';
+    this.frameCount = this.frameCount + this.vel;
+    rotateX(this.frameCount);
+    rotateY(this.frameCount);
+    this.fishtank = box(this.entrada_lado_1.value, this.entrada_lado_2.value, this.entrada_lado_3.value, 0, 0);
+}
+cubic() {
+    this.figura.innerHTML = 'cubic';
+    document.getElementById('help').innerHTML = "";
+
+    // Calculate the volume in liters
+    let litros = (parseFloat(this.entrada_lado_1.value) ** 3) / 1000;
+
+    // Update the display with the calculated volume
+    this.litrostxt.innerHTML = litros + " l";
+    this.litrostxt.value = litros;
+    this.texto_lado1.innerHTML = 'large cm';
+    this.texto_lado2.innerHTML = '--NOT NEEDED--';
+    this.texto_lado3.innerHTML = '--NOT NEEDED--';
+
+    // Set the size of the box
+    let size = parseFloat(this.entrada_lado_1.value);
+    this.frameCount = this.frameCount + this.vel;
+    rotateX(this.frameCount);
+    rotateY(this.frameCount);
+    this.fishtank = box(size, size, size); // Set the size for all dimensions
 }
 
-triangularpris(){
-	litros=(((this.entrada_lado_1.value*this.entrada_lado_2.value)/2)*this.entrada_lado_3.value)/1000
-	this.figura.innerHTML='trianglar prism'
-	this.litrostxt.innerHTML=litros+"l"
-	this.litrostxt.value=litros
-	this.texto_lado1.innerHTML='large of base cm'
-	this.texto_lado2.innerHTML='heigth of base cm'
-	this.texto_lado3.innerHTML='heigth  cm '
-	this.frameCount = this.frameCount+ this.vel;
-	document.getElementById('help').innerHTML = 'help links <br><button value="trianglar prism"><a href="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Faulaprende.com%2Fwp-content%2Fuploads%2F2019%2F01%2Fprisma-triangular.jpg&f=1&nofb=1"> trianglar prism </a></button><br><button value="base"><a href="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmatematicabasica.net%2Fwp-content%2Fuploads%2F2019%2F02%2Farea-do-triangulo-3.png&f=1&nofb=1">base</a></button>';
-	rotateX(this.frameCount);
-  	rotateY(this.frameCount);	
-	this.fishtank =  cylinder(this.b,this.h,3)
-	//return this.fishtank
+
+triangularpris() {
+    // Calculate the volume in liters
+    let litros = ((this.entrada_lado_1.value * this.entrada_lado_2.value / 2) * this.entrada_lado_3.value) / 1000;
+
+    // Update the display with the calculated volume
+    this.figura.innerHTML = 'triangular prism';
+    this.litrostxt.innerHTML = litros + " l";
+    this.litrostxt.value = litros;
+    this.texto_lado1.innerHTML = 'large of base cm';
+    this.texto_lado2.innerHTML = 'height of base cm';
+    this.texto_lado3.innerHTML = 'height cm';
+    document.getElementById('help').innerHTML = '';
+
+    // Adjust the shape size
+    let baseSize = parseFloat(this.entrada_lado_1.value);
+    let heightOfBase = parseFloat(this.entrada_lado_2.value);
+    let height = parseFloat(this.entrada_lado_3.value);
+
+    this.frameCount = this.frameCount + this.vel;
+    rotateX(this.frameCount);
+    rotateY(this.frameCount);
+    this.fishtank = cylinder(baseSize, heightOfBase, 3);
 }
-cilinder(){
-	this.figura.innerHTML='cilinder';
-	document.getElementById('help').innerHTML = ""
-	this.R=parseFloat(this.entrada_lado_1.value)
-	this.h=parseFloat(this.entrada_lado_2.value)
-	litros=PI*(parseFloat(this.entrada_lado_1.value)**2)*parseFloat(this.entrada_lado_2.value)/1000	
-	this.litrostxt.value=litros
-	this.texto_lado1.innerHTML='radio cm'
-	this.texto_lado2.innerHTML='heigth cm'
-	this.texto_lado3.innerHTML='--NOT NEEDED--'
-	this.litrostxt.innerHTML=litros+" l"
-	this.frameCount = this.frameCount+ this.vel;
-	rotateX(this.frameCount);
-  	rotateY(this.frameCount);
-	this.fishtank =  cylinder(this.R,this.h,24)
+
+cilinder() {
+    this.figura.innerHTML = 'cylinder';
+    document.getElementById('help').innerHTML = "";
+
+    // Parse input values
+    let R = parseFloat(this.entrada_lado_1.value); // Radius
+    let h = parseFloat(this.entrada_lado_2.value); // Height
+
+    // Calculate the volume in liters
+    let litros = (Math.PI * R ** 2 * h) / 1000;
+
+    // Update the display with the calculated volume
+    this.litrostxt.innerHTML = litros + " l";
+    this.litrostxt.value = litros;
+    this.texto_lado1.innerHTML = 'radius cm';
+    this.texto_lado2.innerHTML = 'height cm';
+    this.texto_lado3.innerHTML = '--NOT NEEDED--';
+
+    // Adjust the shape size and render
+    this.frameCount = this.frameCount + this.vel;
+    rotateX(this.frameCount);
+    rotateY(this.frameCount);
+    this.fishtank = cylinder(R, h, 24); // Assuming 24 segments for smoothness
 }
 
 
@@ -140,9 +160,6 @@ function draw() {
 
 }
 </script>
-</head>
-<body>
-<!-- for jinga template-->
 
 <style type="text/css">
 	body
@@ -154,10 +171,6 @@ function draw() {
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.0/p5.js" integrity="sha256-06BMLzEz/H5XPiFSyP2MjdNIrDV9Z4woSTO/K0sqKi0=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.0/p5.min.js" integrity="sha256-CwZPX44X9VxXbhmoN2vi9HX2txOvx+lemuTXYqIspAs=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="js/drawFISHTANK.js">
-</script>
-<script type="text/javascript" src="js/FISHTANK.js">
-</script>
 
 <meta charset="UTF-8"> 
 <br>
@@ -219,8 +232,5 @@ function draw() {
 
 </form>
 
-<p>(right now is only working in firefox)</p>
-<!-- for jinga template-->
-</body>
-</html
+
 {% endblock %}
