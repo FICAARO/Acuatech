@@ -13,6 +13,8 @@
 <link rel="stylesheet" href="css/bootstrap.css" />
     <title>TiendaPeces</title>
     <style>
+
+
         body {
             background-image: url("https://raw.githubusercontent.com/sdominguer/Acuatech/master/user/static/img/fondo2.jpg");
             background-repeat: no-repeat;
@@ -21,7 +23,7 @@
             height: 100vh;
             position: relative;
             color: #052C42; /* Color de texto azul */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;;
+            font-family: "Segoe UI";
             margin: 0; /* Eliminar margen predeterminado del body */
         }
 
@@ -98,13 +100,13 @@
           <a class="nav-link {% if request.path == '/tienda/productos/' %}disabled{% endif %}" href="/tienda/productos/">Productos</a>
         </li>
        <li class="nav-item px-lg-4">
-        <a class="nav-link {% if request.path == '/autenticacion//' %}disabled{% endif %}" href="/autenticacion/">Autenticacion</a></li>
+        <a class="nav-link {% if request.path == '/autenticacion//' %}disabled{% endif %}" href="/autenticacion/registro">Crear cuenta</a></li>
       </li>
       <li class="nav-item px-lg-4">
         <a class="nav-link {% if request.path == '/autenticacion/login' %}disabled{% endif %}" href="/autenticacion/login">Login</a>
       </li>
         <li class="nav-item px-lg-4">
-          <a class="nav-link {% if request.path == '/tienda/carro/' %}disabled{% endif %}" href="/tienda/carro/">Carrito</a>
+          <a class="nav-link {% if request.path == '/tienda/carro/' %}disabled{% endif %}" href="/tienda/carro/">Carrito 🛒</a>
         </li>
       </ul>
     </div>
@@ -158,12 +160,15 @@
   </th>
 </div>
 </table>
+<main>
 
 <center>
+
 {% block content %}
 
 {% endblock %}
 </center>
+</main>
 <footer class="text-center text-lg-start text-white mt-5" style="background-color: #052C42; margin-top: 50px;">
     <div class="container">
         <div class="row">

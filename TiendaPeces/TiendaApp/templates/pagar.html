@@ -1,8 +1,38 @@
 {% extends "templateshop.html" %}
 {% block content %}
+<style type="text/css">
+          .container-fluid {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+                .content-container {
+            background-color: rgba(255, 255, 255, 0.5); /* Color de fondo blanco con transparencia */
+            padding: 70px; /* Espacio interno para el contenido */
+            border-radius: 10px; /* Bordes redondeados */
+            width: 80%;
+            color: #052C42;
+        }
+                .custom-button {
+            font-size: 1.10rem; /* Tamaño de fuente */
+            padding: 10px 20px; /* Padding para aumentar el tamaño del botón */
+            background-color: #0A506C; /* Color de fondo azul */
+            border-color: #00FF00; /* Color del borde */
+            margin: 40px; /* Espaciado entre los botones */
+            color: #ffffff; /* Color de texto blanco */
+            font-family: "Segoe UI";
+            border-radius: 10px;
+        }
+</style>
+<div class="container-fluid">
+
 <div class="w-100 p-3">
   <div class="container mt-5 mb-5">
     <div class="d-flex justify-content-center row">
+            <div class="content-container">
+<h1>Confirmar pedido</h1>
+
     <h3></h3>
     <table class="table">
       <thead class="thead-dark">
@@ -30,11 +60,9 @@
             <th scope="row">{{ forloop.counter }} </th>
             <td>{{value.nombre}}</td>
             <td>{{value.cantidad}}</td>
-            <td>
-                    <a href="{% url 'carro:agregar' value.producto_id %}" class="btn btn-sm btn-success">+</a>
-                    <a href="{% url 'carro:restar' value.producto_id %}" class="btn btn-sm btn-success">-</a>
+            <td>{{value.precio}}</td>
+                    
                     <br/>
-                    {{value.precio}} $
             </td>
 
           </tr>
@@ -69,5 +97,6 @@
     {% endif %}
     </div>
   </div>
+</div>
 </div>
 {% endblock %} 
