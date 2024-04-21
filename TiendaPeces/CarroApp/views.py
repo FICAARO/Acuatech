@@ -20,3 +20,8 @@ def limpiar_carro(request,producto_id):
 	mi_carro=carro(request)
 	mi_carro.limpiar_carro()
 	return redirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+def comprar(request,producto_id):
+	mi_carro=carro(request)
+	producto=Producto.objects.get(id=producto_id)
+	mi_carro.agregar(producto)
+	return redirect("/tienda/carro/")
