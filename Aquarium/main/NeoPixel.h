@@ -25,9 +25,9 @@ public:
     this->leds.clear();
     this->leds.setBrightness(clr[6]);
     for (uint8_t i = 0; i < this->leds.numPixels(); i++) {
-      short c = -1;
-      if (clr[7] > 0 && i % clr[7] == 0) c = 2;
-      this->leds.setPixelColor(i, this->leds.Color(clr[++c], clr[++c], clr[++c]));
+      unsigned short c = 0;
+      if (clr[7] > 0 && i % clr[7] == 0) c = 3;
+      this->leds.setPixelColor(i, this->leds.Color(clr[c], clr[c+1], clr[c+2]));
     }
   }
 };

@@ -33,7 +33,7 @@ public:
   }
 
   void print(const String& label) {
-    Serial.print(label);
+    Serial.print(label + ": ");
     Serial.println(this->value);
   }
 
