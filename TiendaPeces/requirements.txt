@@ -1,7 +1,9 @@
 crispy-bootstrap4==2024.1
+deep_translator==1.11.4
 Django==5.0.4
 django-crispy-forms==2.1
 folium==0.16.0
+google-generativeai==0.5.0
 influxdb-client==1.41.0
 keras==3.2.0
 llama_cpp_python==0.2.61
@@ -11,7 +13,3 @@ pillow==10.3.0
 python-dotenv==1.0.1
 rembg==2.0.56
 tensorflow==2.16.1
-influxdb_client
-deep_translator
-google-generativeai
-python-dotenv
