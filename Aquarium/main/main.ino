@@ -1,8 +1,9 @@
 
 // Libraries
 #include <WiFi.h>
+#include <HTTPClient.h>
 #include <WiFiUdp.h>
-#include <EEPROM.h>
+#include <Preferences.h>
 #include <DHT.h>                // "DHT sensor library" by "Adafruit" v1.4.6
 #include <DallasTemperature.h>  // "DallasTemperature" by "Miles Burton" v3.9.0
 #include <InfluxDbClient.h>     // "ESP8266 Influxdb" by "Tobias Schürg" v3.13.1
@@ -19,22 +20,23 @@
 #include "Secrets.h"
 
 // Pin I/O
-#define BOOT 0        // Built-in boot button (D0) 
-#define LIGHTS 2      // Lights actuator (D2) 
-#define THERMOSTAT 4  // Thermostat actuator (D4) 
-#define FILTERS 5     // Filters actuator (D5) 
-#define DHTPIN 13     // DHT11 sensor (D13) 
-#define SERVO 15      // Lights actuator (D15) 
-#define WTEMP 32      // Water temperature sensor (A4) 
-#define TURBIDITY 34  // Turbidity sensor (A6) 
-#define WLEVEL 35     // Water level sensor (A7) 
-#define NEOLIGHT1 19  // Neopixel strip 1 (D19) 
-#define NEOLIGHT2 18  // Neopixel strip 2 (D18) 
+#define BOOT 0        // Built-in boot button (D0)
+#define LIGHTS 2      // Lights actuator (D2)
+#define THERMOSTAT 4  // Thermostat actuator (D4)
+#define FILTERS 5     // Filters actuator (D5)
+#define DHTPIN 13     // DHT11 sensor (D13)
+#define SERVO 15      // Lights actuator (D15)
+#define WTEMP 32      // Water temperature sensor (A4)
+#define TURBIDITY 34  // Turbidity sensor (A6)
+#define WLEVEL 35     // Water level sensor (A7)
+#define NEOLIGHT1 19  // Neopixel strip 1 (D19)
+#define NEOLIGHT2 18  // Neopixel strip 2 (D18)
 
 // Constants
-const char* AP_SSID = "CUSTOM_SSID";      // SSID of the access point Wi-Fi network
-const char* AP_PASS = "CUSTOM_PASSWORD";  // Password of the access point Wi-Fi network
-#define WIFI_TIMEOUT 10000                // Limit time on WiFi disconnection
+const char* AP_SSID = "";  // SSID of the access point Wi-Fi network
+const char* AP_PASS = "";  // Password of the access point Wi-Fi network
+#define BACKEND_URL ""
+#define WIFI_TIMEOUT 10000  // Limit time on WiFi disconnection
 
 #define GMT_OFFSET -18000          // Timezone offset compared to GMT
 #define DAYLIGHT_OFFSET 0          // Daylight savings offset
@@ -44,7 +46,7 @@ const char* AP_PASS = "CUSTOM_PASSWORD";  // Password of the access point Wi-Fi 
 #define FLUX_URL ""             // InfluxDB URL
 #define FLUX_ORG ""             // InfluxDB organization ID
 #define FLUX_BUCKET ""          // InfluxDB bucket/table name
-#define TZ_INFO ""              // Server timezone
+#define TZ_INFO "UTC-5"         // Server timezone
 #define FLUX_SEND_TIMEOUT 5000  // Interval time for sending data to database
 
 #define DHTTYPE DHT11          // Type of the DHT sensor
@@ -66,9 +68,9 @@ uint8_t COLORS[5][8] = {
 };
 
 // Variables
-String wifiSSID = "";    // SSID of the Wi-Fi network (Set by EEPROM)
-String wifiPass = "";    // Password of the Wi-Fi network (Set by EEPROM)
-String aquariumId = "";  // The ID of this device's aquarium (Set by EEPROM)
+String wifiSSID = "";    // SSID of the Wi-Fi network
+String wifiPass = "";    // Password of the Wi-Fi network
+String aquariumId = "";  // The ID of this device's aquarium
 short hours = 0;         // The real time hour number
 short oldHours = 0;
 uint8_t color = -1;     // The color corresponding to the current hour
@@ -89,6 +91,7 @@ AccessPoint ap(AP_SSID, AP_PASS, 80);
 NeoPixel pixel1(PIXELS1, NEOLIGHT1);
 NeoPixel pixel2(PIXELS2, NEOLIGHT2);
 Servo feeder;
+Preferences preferences;
 
 // Time variables
 unsigned long currTime = 0;          // Current relative time of the program
@@ -153,7 +156,8 @@ void setup() {
 
   // Comms
   Serial.begin(115200);
-  EEPROM.begin(512);
+  Serial2.begin(115200);
+  preferences.begin("credentials");
 
   // Sensors
   dht.begin();
@@ -167,15 +171,14 @@ void setup() {
   pixel1.begin(50);
   pixel2.begin(50);
 
-  // EEPROM
-  EEPROM.get(size, wifiSSID);
-  size += sizeof(wifiSSID);
-  EEPROM.get(size, wifiPass);
-  size += sizeof(wifiPass);
-  EEPROM.get(size, aquariumId);
+  // Preferences
+  wifiSSID = preferences.getString("wifi-ssid");
+  wifiPass = preferences.getString("wifi-pass");
+  aquariumId = preferences.getString("token");
 
   // Wi-Fi
   Serial.println("Using Credentials: " + wifiSSID + " :: " + wifiPass);
+  Serial.println("User Token: " + aquariumId);
   WiFi.mode(WIFI_STA);
   WiFi.begin(wifiSSID, wifiPass);
 }
@@ -192,10 +195,11 @@ void loop() {
   }
 
   // Launch AP on no WiFi or BOOT button press
-  if (ap.launched) ap.handleClient(size);
+  if (ap.launched) ap.handleClient();
   else if (digitalRead(BOOT) == LOW || currTime - lastConnected >= WIFI_TIMEOUT) {
     Serial.println("[ACCESS POINT]");
-    ap.begin();
+    digitalWrite(BUILTIN_LED, HIGH);
+    ap.begin(&preferences);
   }
 
   // Config time once

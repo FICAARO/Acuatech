@@ -2,7 +2,7 @@
 #define ACCESS_POINT_H
 
 #include <WiFi.h>
-#include <EEPROM.h>
+#include <Preferences.h>
 
 class AccessPoint {
 private:
@@ -71,6 +71,7 @@ private:
                   "</html>";
 public:
   bool launched;
+  Preferences* preferences;
 
   AccessPoint(const char* ssidAP, const char* passAP, uint8_t port)
     : server(port), SSID(ssidAP), PASS(passAP) {
@@ -78,9 +79,11 @@ public:
     this->launched = false;
   }
 
-  void begin() {
+  void begin(Preferences* preferences) {
     this->launched = true;                // Only launches once per program
     WiFi.softAP(this->SSID, this->PASS);  // Initialize AP
+
+    this->preferences = preferences;
 
     // Retreive the IP
     IPAddress ip = WiFi.softAPIP();
@@ -91,7 +94,7 @@ public:
     this->server.begin();
   }
 
-  void handleClient(int tokenIdx) {
+  void handleClient() {
     // Omit handling when no client was found
     WiFiClient client = this->server.available();
     if (!client) return;
@@ -124,16 +127,15 @@ public:
         String ssid = header.substring(header.indexOf("wifi-ssid=") + 10, header.indexOf("&"));
         String pass = header.substring(header.indexOf("wifi-pass=") + 10);
 
-        EEPROM.put(0, ssid);
-        EEPROM.put(sizeof(ssid), pass);
-        EEPROM.commit();
+        this->preferences->putString("wifi-ssid", ssid);
+        this->preferences->putString("wifi-pass", pass);
 
         client.println(this->res301);
       } else if (this->header.indexOf("POST /setup/token") != -1) {
         String token = header.substring(header.indexOf("token=") + 6);
 
-        EEPROM.put(tokenIdx, token);
-        EEPROM.commit();
+        this->preferences->putString("token", token);
+        Serial.println("Setting token " + token);
 
         client.println(this->res301);
       } else if (this->header.indexOf("GET /") != -1) {
