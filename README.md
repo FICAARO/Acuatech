@@ -1,6 +1,6 @@
 # Acuatech
 
-<p align="center"><img src="https://raw.githubusercontent.com/jero98772/Bioinformatics-toolspy/main/docs/logo.jpeg" width="500" height="500"></p>
+<p align="center"><img src="https://avatars.githubusercontent.com/u/147756061?s=400&u=97529d858fcada36803623812a49d96623e2133b&v=4" width="500" height="500"></p>
 
 Thank you for visiting our online fish store built with Django and Python! We're excited to offer you a unique shopping experience for all your aquatic needs. Our platform integrates cutting-edge technology to ensure the health and happiness of your aquatic friends.
 
