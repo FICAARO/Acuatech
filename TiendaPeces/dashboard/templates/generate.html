@@ -1,0 +1,102 @@
+{% extends "template.html" %}
+<!--  -->
+{% block scripts %}
+<script type="module" defer>
+  function copyToken() {
+    const tokenInput = document.getElementById("token");
+    const copier = document.getElementById("token-copier");
+    const proceed = document.getElementById("proceed");
+
+    tokenInput.select();
+    tokenInput.selectionRange?.(0, 999999);
+
+    navigator.clipboard.writeText(tokenInput.value);
+
+    copier.style.width = `${copier.clientWidth}px`;
+    copier.textContent = "Copied";
+    proceed.style.display = "inline-block"
+    setTimeout(() => {
+      copier.style.width = "auto";
+      copier.textContent = "Copy to Clipboard";
+    }, 1500);
+  }
+
+  document.getElementById("token-copier").addEventListener("click", copyToken);
+</script>
+{% endblock scripts %}
+<!--  -->
+{% block content %}
+
+<style>
+  main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .generator-wrapper {
+    width: min(60rem, 100%);
+    padding: 0.5rem 1rem;
+    background-color: hsl(0, 0%, 100%, 90%);
+    border-radius: 6px;
+  }
+  form {
+    margin: 1rem 0;
+  }
+  input {
+    display: block;
+    margin: 0 auto;
+    padding: 0.5rem 1rem;
+    width: min(30rem, 100%);
+    border: 1px solid #9f9f9f;
+    border-radius: 100vmax;
+  }
+  .token-copier {
+    width: 100%;
+  }
+  .btn-wrapper {
+    width: fit-content;
+    margin: 0.5rem auto;
+    margin-top: 1.5rem;
+  }
+  .btn-wrapper > * {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    color: white !important;
+    background-color: #052c42;
+    border: none;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+  }
+  .btn-wrapper > *:visited {
+    color: white !important;
+    text-decoration: none;
+  }
+</style>
+
+<div class="generator-wrapper">
+  {% if not token %}
+  <h2 class="generator-title">Create a Dashboard</h2>
+  <form action="/dashboard/generate" method="get">
+    <div class="input-wrapper">
+      <input type="text" name="dashboard-name" placeholder="Dashboard Name" />
+    </div>
+    <button type="submit">Generate</button>
+  </form>
+
+  {% else %}
+  <h2 class="generator-title">Generated Token</h2>
+  <p>Copy this token and paste it inmediately in your aquarium's Web Server, if you continue to the dashboard you won't be able to see this token again.</p>
+  <input
+    id="token"
+    class="token-copier"
+    disabled="disabled"
+    value="{{ token }}"
+  />
+  <div class="btn-wrapper">
+    <a id="token-copier">Copy to Clipboard</a>
+    <a href="/dashboard" id="proceed" style="display: none;">Continue to Dashboard</>
+  </div>
+  {% endif %}
+</div>
+{% endblock content %}

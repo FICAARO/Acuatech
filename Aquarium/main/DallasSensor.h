@@ -12,7 +12,7 @@ public:
 
   DallasSensor(uint8_t pin)
     : wire(pin), sensor(&wire) {
-    this->wtemp = 0;
+    this->wtemp = -1000.0;
   }
 
   void begin() {
@@ -22,7 +22,7 @@ public:
   void readSensor() {
     this->sensor.requestTemperatures();
     float t = this->sensor.getTempCByIndex(0);
-    if (t == DEVICE_DISCONNECTED_C) this->wtemp = -1;
+    if (t == DEVICE_DISCONNECTED_C) this->wtemp = -1000.0;
     else this->wtemp = t;
   }
 

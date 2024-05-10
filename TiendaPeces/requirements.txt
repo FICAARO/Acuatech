@@ -10,6 +10,7 @@ llama_cpp_python==0.2.61
 numpy==1.26.4
 pandas==2.2.1
 pillow==10.3.0
+PyJWT==2.8.0
 python-dotenv==1.0.1
 rembg==2.0.56
 tensorflow==2.16.1

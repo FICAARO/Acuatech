@@ -1,4 +1,3 @@
-
 // Libraries
 #include <WiFi.h>
 #include <HTTPClient.h>
@@ -6,15 +5,13 @@
 #include <Preferences.h>
 #include <DHT.h>                // "DHT sensor library" by "Adafruit" v1.4.6
 #include <DallasTemperature.h>  // "DallasTemperature" by "Miles Burton" v3.9.0
-#include <InfluxDbClient.h>     // "ESP8266 Influxdb" by "Tobias Schürg" v3.13.1
-#include <InfluxDbCloud.h>
 #include <NTPClient.h>          // "NTPClient" by "Fabrice Weinberg" v3.2.1
 #include <Adafruit_NeoPixel.h>  // "Adafruit NeoPixel" by "Adafruit" v1.12.0
 #include <ESP32Servo.h>         // "ESP32Servo" by "Kevin Harrington" v1.1.2
+#include <ArduinoJson.h>        // "ArduinoJson" by "Benoit Blanchon" v7.0.4
 #include "DhtSensor.h"
 #include "DallasSensor.h"
 #include "GenericSensor.h"
-#include "Influx.h"
 #include "AccessPoint.h"
 #include "NeoPixel.h"
 #include "Secrets.h"
@@ -33,21 +30,17 @@
 #define NEOLIGHT2 18  // Neopixel strip 2 (D18)
 
 // Constants
-const char* AP_SSID = "";  // SSID of the access point Wi-Fi network
-const char* AP_PASS = "";  // Password of the access point Wi-Fi network
-#define BACKEND_URL ""
+const char* AP_SSID = "Acuatech SSID";  // SSID of the access point Wi-Fi network
+const char* AP_PASS = "PASSWORD";      // Password of the access point Wi-Fi network
+#define BACKEND_URL "BACKEND_ORIGIN"
+#define BACKEND_DATA "BACKEND_ORIGIN/dashboard/data/"
+#define HTTP_TIMEOUT 2500  // Limit time on WiFi disconnection
 #define WIFI_TIMEOUT 10000  // Limit time on WiFi disconnection
 
 #define GMT_OFFSET -18000          // Timezone offset compared to GMT
 #define DAYLIGHT_OFFSET 0          // Daylight savings offset
 #define NTP_SERVER "pool.ntp.org"  // NTP default server
 #define TIME_UPDT_TIMEOUT 1000     // Interval for reading the time
-
-#define FLUX_URL ""             // InfluxDB URL
-#define FLUX_ORG ""             // InfluxDB organization ID
-#define FLUX_BUCKET ""          // InfluxDB bucket/table name
-#define TZ_INFO "UTC-5"         // Server timezone
-#define FLUX_SEND_TIMEOUT 5000  // Interval time for sending data to database
 
 #define DHTTYPE DHT11          // Type of the DHT sensor
 #define TURB_ANALOG true       // Whether the turbidity sensor is ADC
@@ -68,8 +61,8 @@ uint8_t COLORS[5][8] = {
 };
 
 // Variables
-String wifiSSID = "";    // SSID of the Wi-Fi network
-String wifiPass = "";    // Password of the Wi-Fi network
+String wifiSSID = "";    // SSID of the Wi-Fi network 
+String wifiPass = "";    // Password of the Wi-Fi network 
 String aquariumId = "";  // The ID of this device's aquarium
 short hours = 0;         // The real time hour number
 short oldHours = 0;
@@ -86,12 +79,13 @@ DhtSensor dht(DHTPIN, DHTTYPE);
 DallasSensor dallas(WTEMP);
 GenericSensor wlevel(WLEVEL, true);
 GenericSensor turbidity(TURBIDITY, TURB_ANALOG);
-Influx influx(FLUX_URL, FLUX_ORG, FLUX_BUCKET, FLUX_TOKEN, InfluxDbCloud2CACert, "test");
 AccessPoint ap(AP_SSID, AP_PASS, 80);
 NeoPixel pixel1(PIXELS1, NEOLIGHT1);
 NeoPixel pixel2(PIXELS2, NEOLIGHT2);
 Servo feeder;
 Preferences preferences;
+Preferences relays;
+JsonDocument httpRes;
 
 // Time variables
 unsigned long currTime = 0;          // Current relative time of the program
@@ -149,15 +143,17 @@ void setup() {
   pinMode(THERMOSTAT, OUTPUT);
   pinMode(FILTERS, OUTPUT);
 
-  // Output clearing
-  digitalWrite(BUILTIN_LED, LOW);
-  digitalWrite(THERMOSTAT, LOW);
-  digitalWrite(FILTERS, LOW);
 
   // Comms
   Serial.begin(115200);
   Serial2.begin(115200);
   preferences.begin("credentials");
+  relays.begin("relays");
+
+  // Output clearing
+  digitalWrite(BUILTIN_LED, relays.getBool("lights"));
+  digitalWrite(THERMOSTAT, relays.getBool("thermo"));
+  digitalWrite(FILTERS, relays.getBool("filter"));
 
   // Sensors
   dht.begin();
@@ -190,7 +186,6 @@ void loop() {
   wifiConnected = WiFi.status() == WL_CONNECTED;
   if (wifiConnected) {
     // Connect to InfluxDB once
-    if (!influx.connected) influx.connect(TZ_INFO);
     lastConnected = currTime;
   }
 
@@ -268,18 +263,66 @@ void loop() {
   }
 
   // Communicate data to InfluxDB
-  if (currTime - lastDataSend >= FLUX_SEND_TIMEOUT && wifiConnected) {
-    influx.sensor.clearFields();
+  if (currTime - lastDataSend >= HTTP_TIMEOUT && wifiConnected) {
+    // Fetch data from the backed
+    HTTPClient http;
 
-    influx.sensor.addField("temp", dht.temp);
-    influx.sensor.addField("hum", dht.hum);
-    influx.sensor.addField("wtemp", dallas.wtemp);
-    influx.sensor.addField("wlevel", wlevel.value);
-    influx.sensor.addField("turbp", turbidity.scaled);
+    http.begin(BACKEND_DATA);
+    http.addHeader("X-Request-Source", "ESP32");
+    http.addHeader("X-User-Token", aquariumId);
 
-    // Send data
-    influx.printLineProtocol();
-    influx.write();
+    int code = http.GET();
+    if (code > 0) {
+      String payload = http.getString();
+
+      deserializeJson(httpRes, payload);
+      serializeJsonPretty(httpRes, Serial);
+      Serial.println();
+    } else {
+      Serial.printf("[HTTP] GET failed. Error: %s\n", http.errorToString(code).c_str());
+    }
+    http.end();
+
+    // Update relays with received data
+    bool lights = httpRes["lights"];
+    bool filter = httpRes["filter"];
+    bool thermo = httpRes["thermo"];
+
+    digitalWrite(LIGHTS, lights);
+    digitalWrite(FILTERS, filter);
+    digitalWrite(THERMOSTAT, thermo);
+
+    relays.putBool("lights", lights);
+    relays.putBool("filter", filter);
+    relays.putBool("thermo", thermo);
+
+    // Send sensor data to backend
+    http.begin(BACKEND_DATA);
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+    http.addHeader("X-Request-Source", "ESP32");
+    http.addHeader("X-User-Token", aquariumId);
+
+    String postPayload = "";
+    httpRes["temp"] = dht.temp;
+    httpRes["hum"] = dht.hum;
+    httpRes["wtemp"] = dallas.wtemp;
+    httpRes["turbp"] = turbidity.scaled;
+    httpRes["wlevel"] = wlevel.value;
+
+    serializeJson(httpRes, postPayload);
+    serializeJsonPretty(httpRes, Serial);
+    Serial.println();
+    code = http.POST(postPayload);
+    if (code > 0) {
+      String payload = http.getString();
+
+      deserializeJson(httpRes, payload);
+      serializeJsonPretty(httpRes, Serial);
+      Serial.println();
+    } else {
+      Serial.printf("[HTTP] GET failed. Error: %s\n", http.errorToString(code).c_str());
+    }
+    http.end();
     lastDataSend = currTime;
   }
 }

@@ -9,13 +9,13 @@ private:
 
   float getHumidity() {
     float h = this->dht.readHumidity();
-    if (isnan(h)) return -1;
+    if (isnan(h)) return -1000.0;
     return h;
   }
 
   float getTemperature(bool f) {
     float t = this->dht.readTemperature(f);
-    if (isnan(t)) return -1;
+    if (isnan(t)) return -1000.0;
     return t;
   }
 public:
@@ -24,8 +24,8 @@ public:
 
   DhtSensor(uint8_t pin, uint8_t type)
     : dht(pin, type) {
-    this->hum = 0;
-    this->temp = 0;
+    this->hum = -1000.0;
+    this->temp = -1000.0;
   }
 
   void begin() {

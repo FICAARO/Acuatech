@@ -10,11 +10,31 @@
   const get = (id) => document.querySelector(id);
 
   const w = {
-    temp: { v: get("#temp"), m: get(".widget:has(#temp) .meter-bar") },
-    hum: { v: get("#hum"), m: get(".widget:has(#hum) .needle") },
-    wtemp: { v: get("#wtemp"), m: get(".widget:has(#wtemp) .meter-bar") },
-    wlevel: { v: get("#wlevel"), m: get(".widget:has(#wlevel) .water") },
-    turbp: { v: get("#turbp"), m: get(".widget:has(#turbp) .needle") },
+    temp: {
+      v: get("#temp"),
+      m: get(".widget:has(#temp) .meter-bar"),
+      p: get(".widget:has(#temp)"),
+    },
+    hum: {
+      v: get("#hum"),
+      m: get(".widget:has(#hum) .needle"),
+      p: get(".widget:has(#hum)"),
+    },
+    wtemp: {
+      v: get("#wtemp"),
+      m: get(".widget:has(#wtemp) .meter-bar"),
+      p: get(".widget:has(#wtemp)"),
+    },
+    wlevel: {
+      v: get("#wlevel"),
+      m: get(".widget:has(#wlevel) .water"),
+      p: get(".widget:has(#wlevel)"),
+    },
+    turbp: {
+      v: get("#turbp"),
+      m: get(".widget:has(#turbp) .needle"),
+      p: get(".widget:has(#turbp)"),
+    },
     filter: get("#filter"),
     lights: get("#lights"),
     thermo: get("#thermo"),
@@ -28,6 +48,7 @@
     const parts = `; ${document.cookie}`.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(";").shift();
   }
+  const round2 = (num) => Math.round((num + Number.EPSILON) * 100) / 100;
   /**
    * Linearly interpolate a value to a different range
    * @param {number} x
@@ -37,7 +58,7 @@
    * @param {number} outMax
    */
   const map = (x, inMin, inMax, outMin, outMax) =>
-    ((x - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+    round2(((x - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin);
   /**
    * GET and POST the dashboard data to the backend
    * @param {boolean} skip
@@ -51,10 +72,13 @@
         headers: {
           "Content-Type": "application/json",
           "X-CSRFToken": csrftoken,
+          "X-Request-Source": "Website",
         },
       });
 
-    const res = await fetch("/dashboard/data/");
+    const res = await fetch("/dashboard/data/", {
+      headers: { "X-Request-Source": "Website" },
+    });
     const data = await res.json();
     lights = data.lights || 0;
     filter = data.filter || 0;
@@ -66,35 +90,36 @@
    * @param {Object} data
    */
   function updateDashboard(data) {
-    const {
-      temp = 0,
-      hum = 0,
-      wtemp = 0,
-      wlevel = 0,
-      tubp = 0,
-      filter = 0,
-      lights = 0,
-      thermo = 0,
-    } = data;
+    let { temp, hum, wtemp, wlevel, turbp, filter, lights, thermo } = data;
+    if (temp == -1000) temp = null;
+    if (hum == -1000) hum = null;
+    if (wtemp == -1000) wtemp = null;
+    if (turbp == -1000) turbp = null;
+    if (wlevel == -1000) wlevel = null;
 
-    w.temp.v.textContent = `${temp} °C`;
+    w.temp.v.textContent = `${round2(temp) || 0} °C`;
     w.temp.m.style.height = `calc(${map(temp, 0, 50, 0, 100)}% - 1rem)`;
+    w.temp.p.classList.toggle("broken", temp === null);
 
-    w.hum.v.textContent = `${hum}%`;
+    w.hum.v.textContent = `${round2(hum) || 0}%`;
     w.hum.m.style.transform = `rotate(${map(hum, 0, 100, 45, 315)}deg)`;
+    w.hum.p.classList.toggle("broken", hum === null);
 
-    w.wtemp.v.textContent = `${wtemp} °C`;
+    w.wtemp.v.textContent = `${round2(wtemp) || 0} °C`;
     w.wtemp.m.style.height = `calc(${map(wtemp, 0, 50, 0, 100)}% - 1rem)`;
+    w.wtemp.p.classList.toggle("broken", wtemp === null);
 
-    w.wlevel.v.textContent = `${wlevel}%`;
-    w.wlevel.m.style.height = `calc(${map(wtemp, 0, 100, 0, 100)}% - 1rem)`;
+    w.wlevel.v.textContent = `${round2(wlevel) || 0}%`;
+    w.wlevel.m.style.height = `calc(${map(wlevel, 0, 100, 0, 100)}% - 1rem)`;
+    w.wlevel.p.classList.toggle("broken", wlevel === null);
 
-    w.turbp.v.textContent = `${tubp}%`;
-    w.turbp.m.style.transform = `rotate(${map(tubp, 0, 100, 45, 315)}deg)`;
+    w.turbp.v.textContent = `${round2(turbp) || 0}%`;
+    w.turbp.m.style.transform = `rotate(${map(turbp, 0, 100, 45, 315)}deg)`;
+    w.turbp.p.classList.toggle("broken", turbp === null);
 
-    w.filter.classList.toggle("on", filter == 1)
-    w.lights.classList.toggle("on", lights == 1)
-    w.thermo.classList.toggle("on", thermo == 1)
+    w.filter.classList.toggle("on", filter == 1);
+    w.lights.classList.toggle("on", lights == 1);
+    w.thermo.classList.toggle("on", thermo == 1);
   }
 
   manageData(true).then(updateDashboard);
@@ -143,13 +168,52 @@
     flex-grow: 4;
   }
   .widget {
+    position: relative;
     display: flex;
     flex-direction: column;
     flex: 1 1 0;
     padding: 0.5rem;
-    min-width: 17rem;
+    min-width: 20rem;
     background-color: white;
+    border: 1px solid white;
     border-radius: 10px;
+  }
+  .widget.broken {
+    /* background-color: hsl(0 100% 95%); */
+    border-color: hsl(0 100% 65%);
+  }
+  .widget.broken::before {
+    content: "!";
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 1.625rem;
+    aspect-ratio: 1;
+    line-height: 1rem;
+    color: white;
+    background-color: hsl(0 100% 65%);
+    border-radius: 100%;
+    font-weight: 900;
+  }
+  .widget.broken::after {
+    content: "¡Sensor dañado!";
+    position: absolute;
+    top: 3rem;
+    right: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    color: white;
+    background-color: hsl(0 100% 65%);
+    border-radius: 100vmax;
+    font-weight: 700;
+    pointer-events: none;
+    opacity: 0;
+    transition: 150ms;
+  }
+  .widget.broken:hover::after {
+    opacity: 1;
   }
   .widget-title {
     flex: 0 0 auto;
@@ -161,8 +225,11 @@
     flex: 1 1 0;
     display: flex;
   }
-  .thermometer > * {
+  .thermometer .shape-wrapper {
     flex: 1 1 0;
+  }
+  .thermometer .widget-value {
+    flex: 2 1 0;
   }
   .widget-value {
     display: flex;
@@ -170,7 +237,7 @@
     padding: 0 1rem;
     height: 100%;
     align-items: center;
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 700;
   }
   .shape-wrapper {
@@ -301,9 +368,9 @@
   .switch {
     cursor: pointer;
     position: relative;
-    padding:2rem 5rem;
+    padding: 2rem 5rem;
     background-color: white;
-    border: .25rem solid #a0a0a0;
+    border: 0.25rem solid #a0a0a0;
     border-radius: 100vmax;
     box-shadow: 0 0 0 #a0a0a0;
     transition: 150ms;
@@ -318,8 +385,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: .25rem;
-    height: calc(100% - .5rem);
+    margin: 0.25rem;
+    height: calc(100% - 0.5rem);
     top: 0;
     aspect-ratio: 1;
     background-color: #a0a0a0;
