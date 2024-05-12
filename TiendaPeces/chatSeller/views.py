@@ -2,7 +2,7 @@ from django.shortcuts import render
 from llama_cpp import Llama
 import google.generativeai as genai
 import os
-
+msgs=[]
 def webTranslate(txt,writeIn,translateTo):
 	"""
 	webTranslate(txt,writeIn,translateTo )
@@ -84,7 +84,9 @@ But our commitment to your aquatic journey doesn't end with the sale. We're here
 
 So why wait? Dive into the world of aquaria with us and discover the endless possibilities of creating your own aquatic masterpiece. Together, we'll turn your underwater dreams into reality."""
 	msg=request.POST.get("message")
+	msgs.append(msg)
 	answer=""
 	if request.method == 'POST':
 		answer=geminiChat(msg,role)
-	return render(request,"chat.html",{"chatmsg":answer})
+	msgs.append(answer)
+	return render(request,"chat.html",{"chatmsg":msgs})
