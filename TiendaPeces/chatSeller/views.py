@@ -84,10 +84,12 @@ But our commitment to your aquatic journey doesn't end with the sale. We're here
 
 So why wait? Dive into the world of aquaria with us and discover the endless possibilities of creating your own aquatic masterpiece. Together, we'll turn your underwater dreams into reality."""
 	msg=request.POST.get("message")
-	msgs.append(msg)
-	answer=""
-	if request.method == 'POST':
-		answer=geminiChat(msg,role)
-	msgs.append(answer)
-	print(msgs)
-	return render(request,"chat.html",{"chatmsg":msgs})
+	print(msg)
+	if msg:
+		msgs.append(msg)
+		answer=""
+		if request.method == 'POST':
+			answer=geminiChat(msg,role)
+		msgs.append(answer)
+		print(msgs)
+	return render(request,"chat.html",{"chatmsg":dict(enumerate(msgs))})
