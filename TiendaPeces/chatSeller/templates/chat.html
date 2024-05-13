@@ -1,16 +1,12 @@
 {% extends "template.html" %}
 {% block content %}
  
-
- {{chatmsg}}
-
-<section style="background-color: #eee;">
+<section >
     <div class="container py-5">
       <div class="row d-flex justify-content-center">
         <div class="col-md-8 col-lg-6 col-xl-4">
           <div class="card">
-            {% for i in ""|rangelist:msgs|length %}
-
+        
             <div class="card-header d-flex justify-content-between align-items-center p-3"
               style="border-top: 4px solid #052C42;">
               <h5 class="mb-0">Chat messages</h5>
@@ -22,32 +18,29 @@
               </div>
             </div>
             <div class="card-body" data-mdb-perfect-scrollbar="true" style="position: relative; height: 400px">
-            {% if number % 2 == 0 %}
+              {% for item in chatmsg %}
+                 {% if item.index is even %}
                 <div class="d-flex justify-content-between">
-                        <p class="small mb-1">Timona Siera</p>
-                        <p class="small mb-1 text-muted">23 Jan 2:00 pm</p>
+                        <p class="small mb-1">You</p>
+                        <p class="small mb-1 text-muted"></p>
                       </div>
                       <div class="d-flex flex-row justify-content-start">
                         
                         <div>
-                          <p class="small p-2 ms-3 mb-3 rounded-3" style="background-color: #f5f6f7;">For what reason
-                            would it
-                            be advisable for me to think about business content?</p>
+                          <p class="small p-2 ms-3 mb-3 rounded-3" style="background-color: #f5f6f7;">{{ item }}</p>
                         </div>
                       </div>
-            {% else %}
+                  {% else %}
                     <div class="d-flex justify-content-between">
                         <p class="small mb-1 text-muted">23 Jan 2:05 pm</p>
                         <p class="small mb-1">Johny Bullock</p>
                       </div>
                       <div class="d-flex flex-row justify-content-end mb-4 pt-1">
                         <div>
-                            <p class="small p-2 me-3 mb-3 text-white rounded-3" style="background-color: #052C42;"> <!-- Cambiar el color de fondo del mensaje -->Thank you for your believe in
-                            our
-                            supports</p>
+                            <p class="small p-2 me-3 mb-3 text-white rounded-3" style="background-color: #052C42;">{{ item }}</p>
                         </div>
 
-            {% endif %}
+                {% endif %}
 
   
               </div>

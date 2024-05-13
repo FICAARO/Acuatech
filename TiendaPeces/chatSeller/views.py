@@ -89,4 +89,5 @@ So why wait? Dive into the world of aquaria with us and discover the endless pos
 	if request.method == 'POST':
 		answer=geminiChat(msg,role)
 	msgs.append(answer)
+	print(msgs)
 	return render(request,"chat.html",{"chatmsg":msgs})

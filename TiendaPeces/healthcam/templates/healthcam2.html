@@ -1,11 +1,58 @@
 {% extends "template.html" %}
 {% block content %}
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="file" name="sentFile" />
-    <input type="submit" name="submit" value="Upload" />
-</form>
+  <style>
+    body {
+      background-size: cover;
+      background-position: center;
+      color: #fff;
+    }
+    .container {
+      margin-top: 100px;
+    }
+    .banner {
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .custom-file-upload {
+      border: 1px solid #ccc;
+      display: inline-block;
+      padding: 6px 12px;
+      cursor: pointer;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+    .custom-file-upload:hover {
+      background-color: #0056b3;
+    }
+    .custom-file-upload input[type="file"] {
+      display: none;
+    }
+  </style>
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 offset-md-3 text-center">
+        <div class="banner">
+          <h2 class="mb-4">File Upload</h2>
+          <form id="uploadForm" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="fileInput" class="custom-file-upload">
+              <i class="fas fa-upload mr-2"></i>Select File
+            </label>
+            <input type="file" id="fileInput" name="file">
+            <button type="submit" class="btn btn-primary btn-block mt-3">Upload</button>
+          </form>
+          <div class="mt-3" id="uploadStatus"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 {{name}}
 
 {% endblock %}
