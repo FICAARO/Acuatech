@@ -2,7 +2,6 @@ from django.shortcuts import render
 from llama_cpp import Llama
 import google.generativeai as genai
 import os
-msgs=[]
 def webTranslate(txt,writeIn,translateTo):
 	"""
 	webTranslate(txt,writeIn,translateTo )
@@ -82,8 +81,12 @@ And let's not forget about the foundation of your aquatic masterpiece – the su
 
 But our commitment to your aquatic journey doesn't end with the sale. We're here to support you every step of the way, whether it's through informative blog posts on proper maintenance routines or engaging social media content showcasing the latest aquascaping trends. And for those eager to dive deeper into the art of aquascaping, we offer seminars and workshops where you can learn advanced techniques and gain hands-on experience.
 
-So why wait? Dive into the world of aquaria with us and discover the endless possibilities of creating your own aquatic masterpiece. Together, we'll turn your underwater dreams into reality."""
+So why wait? Dive into the world of aquaria with us and discover the endless possibilities of creating your own aquatic masterpiece. Together, we'll turn your underwater dreams into reality.
+
+just answer the question
+"""
 	msg=request.POST.get("message")
+	msgs=[]
 	print(msg)
 	if msg:
 		msgs.append(msg)
