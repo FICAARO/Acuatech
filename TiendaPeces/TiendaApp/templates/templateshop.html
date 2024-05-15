@@ -13,18 +13,26 @@
 <link rel="stylesheet" href="css/bootstrap.css" />
     <title>TiendaPeces</title>
     <style>
-
-
         body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative;
+            color: #052C42; /* Color de texto azul */
+            background-color: #052C42;
+            font-family: "Segoe UI";
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed; /* Fija la imagen de fondo */
+            margin: 0; /* Eliminar margen predeterminado del body */
+          }
+          main {
+            flex-grow: 1;
+            padding: 1rem 0.5rem;
             background-image: url("https://raw.githubusercontent.com/sdominguer/Acuatech/master/aquatech_web/static/img/fondo2.jpg");
             background-repeat: no-repeat;
             background-size: cover;
             background-attachment: fixed; /* Fija la imagen de fondo */
-            height: 100vh;
-            position: relative;
-            color: #052C42; /* Color de texto azul */
-            font-family: "Segoe UI";
-            margin: 0; /* Eliminar margen predeterminado del body */
         }
 
         .title {
@@ -112,6 +120,7 @@
     </div>
   </nav>
 
+
 <div class="table-responsive-xl">
 <table style="width:100%;background-color: #e3f2fd;"  class="table-info">
 <div class="dropdown">
@@ -162,12 +171,12 @@
 </table>
 <main>
 
-<center>
+<main>
 
 {% block content %}
 
 {% endblock %}
-</center>
+
 </main>
 <footer class="text-center text-lg-start text-white mt-5" style="background-color: #052C42; margin-top: 50px;">
     <div class="container">

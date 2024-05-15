@@ -19,7 +19,6 @@
             color: #052C42; /* Color de texto azul */
             background-color: #052C42;
             font-family: "Segoe UI";
-            background-image: url("https://raw.githubusercontent.com/sdominguer/Acuatech/master/aquatech_web/static/img/fondo2.jpg");
             background-repeat: no-repeat;
             background-size: cover;
             background-attachment: fixed; /* Fija la imagen de fondo */
@@ -28,7 +27,7 @@
           main {
             flex-grow: 1;
             padding: 1rem 0.5rem;
-            background-image: url("https://raw.githubusercontent.com/sdominguer/Acuatech/master/user/static/img/fondo2.jpg");
+            background-image: url("https://raw.githubusercontent.com/sdominguer/Acuatech/master/aquatech_web/static/img/fondo2.jpg");
             background-repeat: no-repeat;
             background-size: cover;
             background-attachment: fixed; /* Fija la imagen de fondo */
@@ -125,6 +124,9 @@
       </li>
       <li class="nav-item px-lg-4">
         <a class="nav-link {% if request.path == '/servicios/' %}disabled{% endif %}" href="/servicios/">Servicios</a>
+      </li>
+      <li class="nav-item px-lg-4">
+        <a class="nav-link {% if request.path == '/autenticacion/login' %}disabled{% endif %}" href="/autenticacion/login">Login</a>
       </li>
 
     </ul>

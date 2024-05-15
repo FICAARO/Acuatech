@@ -98,14 +98,14 @@ def data(request):
                 payload = jwt.decode(token, ENCODING_KEY, algorithms=["HS256"])
             except jwt.exceptions.DecodeError:
                 print("[ESP32] Invalid token")
-                return JsonResponse({ "code": 400 })
+                return JsonResponse({ "code": 400, "msg": "Invalid token" })
 
             user = User.objects.filter(username=payload["username"], password=payload["password"]).first()
             dashboards = user.dashboards.first()
         case _:
             pass
 
-    print("Accessing", user, dashboards)
+    print(request.method, user, dashboards, source)
 
     match request.method:
         case "GET":
@@ -131,13 +131,11 @@ def data(request):
                     if rec.get_field() not in r: continue
                     r[rec.get_field()] = rec.get_value()
 
-            r["lights"] = dashboards.extra1_state
-            r["filter"] = dashboards.extra2_state
-            r["thermo"] = dashboards.extra3_state
+            r["lights"] = int(dashboards.extra1_state)
+            r["filter"] = int(dashboards.extra2_state)
+            r["thermo"] = int(dashboards.extra3_state)
 
-            print("--- GETTING ---")
             print(r)
-            print("---------------")
 
             return JsonResponse(r)
         case "POST":
@@ -150,15 +148,12 @@ def data(request):
                 dashboards.save()
             elif source == "ESP32":
                 record = Point("test_ns").tag("user", user.username).tag("name", dashboards.name)
-                record.field("temp", json_data["temp"])
-                record.field("hum", json_data["hum"])
-                record.field("wtemp", json_data["wtemp"])
-                record.field("wlevel", json_data["wlevel"])
-                record.field("turbp", json_data["turbp"])
-                res = write_api.write(bucket=BUCKET, org=ORG, record=record)
-                print("--- WRITING ---")
-                print(json_data)
+                record.field("temp", round(json_data["temp"], 1))
+                record.field("hum", round(json_data["hum"], 1))
+                record.field("wtemp", round(json_data["wtemp"], 1))
+                record.field("wlevel", round(json_data["wlevel"], 1))
+                record.field("turbp", round(json_data["turbp"], 1))
                 print(record.to_line_protocol())
-                print("---------------")
+                res = write_api.write(bucket=BUCKET, org=ORG, record=record)
 
             return JsonResponse({ "code": 200 })

@@ -404,6 +404,33 @@
     background-color: hsl(0 80% 65%);
     left: 0;
   }
+
+  .control-wrapper {
+    margin-top: .5rem;
+    padding: 1rem;
+    background-color: hsl(0, 0%, 100%, 80%);
+    border-radius: 10px;
+  }
+  .ctlbtn {
+    cursor: pointer;
+    padding: .5rem 2rem;
+    border: 2px solid transparent;
+    border-radius: 100vmax;
+    font-size: 1.125rem;
+    font-weight: 500;
+  }
+  .ctlbtn:hover {
+    filter: brightness(80%);
+  }
+  .main-btn {
+    color: white;
+    background-color: #052c42;
+  }
+  .warn-btn {
+    color: red;
+    border-color: hsl(0 80% 65%);
+    background-color: white;
+  }
 </style>
 
 <div class="dashboard-wrapper">
@@ -478,5 +505,10 @@
       </div>
     </div>
   </div>
+</div>
+
+<div class="control-wrapper">
+  <button class="ctlbtn main-btn" id="update-db">Update</button>
+  <button class="ctlbtn warn-btn" id="delete-db">Delete</button>
 </div>
 {% endblock content %}

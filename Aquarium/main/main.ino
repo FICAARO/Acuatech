@@ -86,6 +86,7 @@ Servo feeder;
 Preferences preferences;
 Preferences relays;
 JsonDocument httpRes;
+JsonDocument httpReq;
 
 // Time variables
 unsigned long currTime = 0;          // Current relative time of the program
@@ -133,6 +134,12 @@ void printData() {
   dallas.print();
   wlevel.print("WaterLevel");
   turbidity.print("Turbidity", "%");
+}
+
+void printJson(char* label, JsonDocument doc) {
+  Serial.print(label);
+  serializeJson(doc, Serial);
+  Serial.println();
 }
 
 // Main routines
@@ -267,6 +274,8 @@ void loop() {
     // Fetch data from the backed
     HTTPClient http;
 
+    Serial.print("[HTTP] ");
+    Serial.println(BACKEND_DATA);
     http.begin(BACKEND_DATA);
     http.addHeader("X-Request-Source", "ESP32");
     http.addHeader("X-User-Token", aquariumId);
@@ -276,8 +285,7 @@ void loop() {
       String payload = http.getString();
 
       deserializeJson(httpRes, payload);
-      serializeJsonPretty(httpRes, Serial);
-      Serial.println();
+      printJson("[GET] res = ", httpRes);
     } else {
       Serial.printf("[HTTP] GET failed. Error: %s\n", http.errorToString(code).c_str());
     }
@@ -303,22 +311,20 @@ void loop() {
     http.addHeader("X-User-Token", aquariumId);
 
     String postPayload = "";
-    httpRes["temp"] = dht.temp;
-    httpRes["hum"] = dht.hum;
-    httpRes["wtemp"] = dallas.wtemp;
-    httpRes["turbp"] = turbidity.scaled;
-    httpRes["wlevel"] = wlevel.value;
+    httpReq["temp"] = dht.temp;
+    httpReq["hum"] = dht.hum;
+    httpReq["wtemp"] = dallas.wtemp;
+    httpReq["turbp"] = turbidity.scaled;
+    httpReq["wlevel"] = wlevel.value;
 
-    serializeJson(httpRes, postPayload);
-    serializeJsonPretty(httpRes, Serial);
-    Serial.println();
+    serializeJson(httpReq, postPayload);
+    printJson("[POST] req = ", httpReq);
     code = http.POST(postPayload);
     if (code > 0) {
       String payload = http.getString();
 
       deserializeJson(httpRes, payload);
-      serializeJsonPretty(httpRes, Serial);
-      Serial.println();
+      printJson("[POST] res = ", httpRes);
     } else {
       Serial.printf("[HTTP] GET failed. Error: %s\n", http.errorToString(code).c_str());
     }

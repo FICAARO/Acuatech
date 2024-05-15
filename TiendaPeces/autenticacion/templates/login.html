@@ -11,7 +11,11 @@
 <style type="text/css">
         .content {
             width: 100%; /* Ocupa todo el ancho */
-            text-align: center; /* Centra el texto horizontalmente */
+            text-align: center;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .custom-button {
@@ -25,10 +29,10 @@
             border-radius: 10px;
         }
         .content-container {
-            background-color: rgba(255, 255, 255, 0.5); /* Color de fondo blanco con transparencia */
+            background-color: rgba(255, 255, 255, 0.75); /* Color de fondo blanco con transparencia */
             padding: 70px; /* Espacio interno para el contenido */
             border-radius: 10px; /* Bordes redondeados */
-            width: 80%;
+            width: min(80%, 50rem);
             color: #052C42;
         }
 
@@ -37,6 +41,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+        .row {
+            width: 100%;
         }
 
         /* Estilos para alinear a la izquierda correo y contraseña */
