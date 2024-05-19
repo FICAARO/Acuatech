@@ -136,3 +136,6 @@ dmypy.json
 # Proteus project environment
 *.pdsbak
 *.workspace
+
+# Vscode config
+.vscode

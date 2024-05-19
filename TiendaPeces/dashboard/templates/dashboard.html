@@ -40,6 +40,16 @@
     thermo: get("#thermo"),
   };
 
+  const plug1Label = get(".widget:has(#lights) h4.widget-title");
+  const plug1LabelEd = get(".widget:has(#lights) input.widget-title");
+  let plug1Edit = false;
+  const plug2Label = get(".widget:has(#filter) h4.widget-title");
+  const plug2LabelEd = get(".widget:has(#filter) input.widget-title");
+  let plug2Edit = false;
+  const plug3Label = get(".widget:has(#thermo) h4.widget-title");
+  const plug3LabelEd = get(".widget:has(#thermo) input.widget-title");
+  let plug3Edit = false;
+
   /**
    * Get a cookie's value by name
    * @param {string} name
@@ -90,7 +100,7 @@
    * @param {Object} data
    */
   function updateDashboard(data) {
-    let { temp, hum, wtemp, wlevel, turbp, filter, lights, thermo } = data;
+    let { temp, hum, wtemp, wlevel, turbp, filter, lights, thermo, plug1Label: plug1, plug2Label: plug2, plug3Label: plug3 } = data;
     if (temp == -1000) temp = null;
     if (hum == -1000) hum = null;
     if (wtemp == -1000) wtemp = null;
@@ -120,6 +130,10 @@
     w.filter.classList.toggle("on", filter == 1);
     w.lights.classList.toggle("on", lights == 1);
     w.thermo.classList.toggle("on", thermo == 1);
+
+    plug1Label.textContent = plug1;
+    plug2Label.textContent = plug2;
+    plug3Label.textContent = plug3;
   }
 
   manageData(true).then(updateDashboard);
@@ -136,6 +150,64 @@
   w.thermo.addEventListener("click", () => {
     thermo ^= 1;
     w.thermo.classList.toggle("on", thermo == 1);
+  });
+
+  
+
+  const toggleInput = (label, input, state) => {
+    if (!state && !!input.value) {
+      label.textContent = input.value;
+    }
+    label.classList.toggle("hidden", state);
+    input.classList.toggle("hidden", !state);
+    console.log({ plug1Edit, plug2Edit, plug3Edit });
+  };
+
+  plug1Label.addEventListener("click", () =>
+    toggleInput(plug1Label, plug1LabelEd, (plug1Edit = !plug1Edit))
+  );
+  plug2Label.addEventListener("click", () =>
+    toggleInput(plug2Label, plug2LabelEd, (plug2Edit = !plug2Edit))
+  );
+  plug3Label.addEventListener("click", () =>
+    toggleInput(plug3Label, plug3LabelEd, (plug3Edit = !plug3Edit))
+  );
+
+  const ctrlPanel = document.getElementById("ctrl-panel");
+  const delBtn = document.getElementById("delete-db");
+  const uptBtn = document.getElementById("update-db");
+
+  delBtn.addEventListener("click", async (e) => {
+    const csrftoken = getCookie("csrftoken");
+    const res = await fetch("/dashboard/", {
+      method: "DELETE",
+      headers: {
+        "X-CSRFToken": csrftoken,
+        "X-Request-Source": "Website",
+      },
+    });
+    if (res.status == 202) {
+      location.reload();
+    }
+  });
+
+  uptBtn.addEventListener("click", async() => {
+    const csrftoken = getCookie("csrftoken");
+    const res = await fetch("/dashboard/data/", {
+      method: "PUT",
+      headers: {
+        "X-CSRFToken": csrftoken,
+        "X-Request-Source": "Website",
+      },
+      body: JSON.stringify({
+        plug1Label: plug1LabelEd.value,
+        plug2Label: plug2LabelEd.value,
+        plug3Label: plug3LabelEd.value,
+      })
+    })
+    toggleInput(plug1Label, plug1LabelEd, (plug1Edit = false));
+    toggleInput(plug2Label, plug2LabelEd, (plug2Edit = false));
+    toggleInput(plug3Label, plug3LabelEd, (plug3Edit = false));
   });
 </script>
 {% endblock scripts %}
@@ -220,6 +292,10 @@
     padding-bottom: 0.125rem;
     border-bottom: 1px solid #052c42;
     font-weight: 500;
+  }
+  .widget-title.hidden {
+    position: absolute;
+    visibility: hidden;
   }
   .widget > div {
     flex: 1 1 0;
@@ -406,14 +482,14 @@
   }
 
   .control-wrapper {
-    margin-top: .5rem;
+    margin-top: 0.5rem;
     padding: 1rem;
     background-color: hsl(0, 0%, 100%, 80%);
     border-radius: 10px;
   }
   .ctlbtn {
     cursor: pointer;
-    padding: .5rem 2rem;
+    padding: 0.5rem 2rem;
     border: 2px solid transparent;
     border-radius: 100vmax;
     font-size: 1.125rem;
@@ -487,19 +563,23 @@
   </div>
   <div class="actuators-wrapper">
     <div class="widget">
-      <h4 class="widget-title">Filtro</h4>
-      <div class="switch-wrapper">
-        <button class="switch" id="filter"></button>
-      </div>
-    </div>
-    <div class="widget">
-      <h4 class="widget-title">Luces</h4>
+      <h4 class="widget-title">Plug 1</h4>
+      <input type="text" class="widget-title hidden" value="Plug 1" />
       <div class="switch-wrapper">
         <button class="switch on" id="lights"></button>
       </div>
     </div>
     <div class="widget">
-      <h4 class="widget-title">Termostato</h4>
+      <h4 class="widget-title">Plug 2</h4>
+      <input type="text" class="widget-title hidden" value="Plug 2" />
+      <div class="switch-wrapper">
+        <button class="switch" id="filter"></button>
+      </div>
+    </div>
+
+    <div class="widget">
+      <h4 class="widget-title">Plug 3</h4>
+      <input type="text" class="widget-title hidden" value="Plug 3" />
       <div class="switch-wrapper">
         <button class="switch on" id="thermo"></button>
       </div>
@@ -507,7 +587,7 @@
   </div>
 </div>
 
-<div class="control-wrapper">
+<div class="control-wrapper" id="ctrl-panel">
   <button class="ctlbtn main-btn" id="update-db">Update</button>
   <button class="ctlbtn warn-btn" id="delete-db">Delete</button>
 </div>

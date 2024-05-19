@@ -38,13 +38,17 @@ def dashboard(request):
 
     dashboards = None
     dashboards = user.dashboards.all()
-    if dashboards.count() == 0:
-        return render(request, "generate.html", { "token": None })
+    if request.method == "GET":
+        if dashboards.count() == 0:
+            return render(request, "generate.html", { "token": None })
 
-    print(dashboards.count())
-    print(user.username, user.password, ENCODING_KEY)
-    
-    return render(request, "dashboard.html")
+        print(dashboards.count())
+        print(user.username, user.password, ENCODING_KEY)
+        
+        return render(request, "dashboard.html", { "name": user.dashboards.first().name })
+    elif request.method == "DELETE":
+        dashboards.delete()
+        return JsonResponse({ "msg": "Deleted this user dashboard successfully." }, status=202)
 
 def generate(request):
     if (request.method != "GET"): return JsonResponse({ "code": 400 })
@@ -111,7 +115,7 @@ def data(request):
         case "GET":
             query = f"""from(bucket: "influxdb")
                 |> range(start: -15s)
-                |> filter(fn: (r) => r["_measurement"] == "test_ns")
+                |> filter(fn: (r) => r["_measurement"] == "aquarium")
                 |> filter(fn: (r) => r["user"] == "{user.username}")
                 |> filter(fn: (r) => r["name"] == "{dashboards.name}")
                 |> last()"""
@@ -124,7 +128,10 @@ def data(request):
                 "turbp": None,
                 "lights": None,
                 "filter": None,
-                "thermo": None
+                "thermo": None,
+                "plug1Label": None,
+                "plug2Label": None,
+                "plug3Label": None
             }
             for table in res:
                 for rec in table.records:
@@ -134,7 +141,9 @@ def data(request):
             r["lights"] = int(dashboards.extra1_state)
             r["filter"] = int(dashboards.extra2_state)
             r["thermo"] = int(dashboards.extra3_state)
-
+            r["plug1Label"] = dashboards.extra1_label
+            r["plug2Label"] = dashboards.extra2_label
+            r["plug3Label"] = dashboards.extra3_label
             print(r)
 
             return JsonResponse(r)
@@ -147,13 +156,24 @@ def data(request):
                 dashboards.extra3_state = json_data["thermo"] == 1
                 dashboards.save()
             elif source == "ESP32":
-                record = Point("test_ns").tag("user", user.username).tag("name", dashboards.name)
-                record.field("temp", round(json_data["temp"], 1))
-                record.field("hum", round(json_data["hum"], 1))
-                record.field("wtemp", round(json_data["wtemp"], 1))
-                record.field("wlevel", round(json_data["wlevel"], 1))
-                record.field("turbp", round(json_data["turbp"], 1))
+                record = Point("aquarium").tag("user", user.username).tag("name", dashboards.name)
+                record.field("temp", float(round(json_data["temp"], 1)))
+                record.field("hum", float(round(json_data["hum"], 1)))
+                record.field("wtemp", float(round(json_data["wtemp"], 1)))
+                record.field("wlevel", float(round(json_data["wlevel"], 1)))
+                record.field("turbp", float(round(json_data["turbp"], 1)))
                 print(record.to_line_protocol())
                 res = write_api.write(bucket=BUCKET, org=ORG, record=record)
 
             return JsonResponse({ "code": 200 })
+        case "PUT":
+            print(request.body)
+            json_data = json.loads(request.body)
+
+            if source == "Website":
+                dashboards.extra1_label = json_data["plug1Label"]
+                dashboards.extra2_label = json_data["plug2Label"]
+                dashboards.extra3_label = json_data["plug3Label"]
+                dashboards.save()
+            
+            return JsonResponse({ "code": 202 })

@@ -28,6 +28,11 @@ public:
 
   void readSensor() {
     this->value = this->analog ? analogRead(this->pin) : digitalRead(this->pin);
+    if (this->value > 4000 || this->value < 200) {
+      this->value = -1000;
+      this->scaled = -1000;
+      return;
+    }
     if (this->scale == NULL) return;
     this->scaled = this->scale(this->value);
   }
