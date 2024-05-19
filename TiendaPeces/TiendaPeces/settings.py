@@ -33,7 +33,7 @@ SECRET_KEY = 'django-insecure--^ylu+-(ed*v6j#4=)vq^t67m$15y)hv6@@oxvn@2(nc9%_r4k
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.ngrok.io','d6c3-2800-484-1d81-2200-d6a8-21b9-bea1-36a3.ngrok-free.app',]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.ngrok.io','d6c3-2800-484-1d81-2200-d6a8-21b9-bea1-36a3.ngrok-free.app','main.jero98772.page']
 
 
 # Application definition
@@ -164,3 +164,9 @@ REST_FRAMEWORK = {
 }
 
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
