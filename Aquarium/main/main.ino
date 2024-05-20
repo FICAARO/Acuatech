@@ -24,8 +24,8 @@
 #define DHTPIN 13     // DHT11 sensor (D13)
 #define SERVO 15      // Lights actuator (D15)
 #define WTEMP 32      // Water temperature sensor (A4)
-#define TURBIDITY 34  // Turbidity sensor (A6)
-#define WLEVEL 35     // Water level sensor (A7)
+#define TURBIDITY 35  // Turbidity sensor (A6)
+#define WLEVEL 34     // Water level sensor (A7)
 #define NEOLIGHT1 19  // Neopixel strip 1 (D19)
 #define NEOLIGHT2 18  // Neopixel strip 2 (D18)
 
@@ -34,7 +34,7 @@ const char* AP_SSID = "Acuatech SSID";  // SSID of the access point Wi-Fi networ
 const char* AP_PASS = "PASSWORD";      // Password of the access point Wi-Fi network
 #define BACKEND_URL "BACKEND_ORIGIN"
 #define BACKEND_DATA "BACKEND_ORIGIN/dashboard/data/"
-#define HTTP_TIMEOUT 2500  // Limit time on WiFi disconnection
+#define HTTP_TIMEOUT 2000  // Limit time on WiFi disconnection
 #define WIFI_TIMEOUT 10000  // Limit time on WiFi disconnection
 
 #define GMT_OFFSET -18000          // Timezone offset compared to GMT
@@ -101,7 +101,7 @@ unsigned long lastFeedOpen = 0;
 
 // Subroutines
 float analogPercentage(int value) {
-  return value * 100 / 4095;
+  return map(value, 650, 0, 0, 4095) * 100 / 4095;
 }
 
 int getHours() {

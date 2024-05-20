@@ -151,9 +151,9 @@ def data(request):
             json_data = json.loads(request.body)
             
             if source == "Website":
-                dashboards.extra1_state = json_data["lights"] == 1
-                dashboards.extra2_state = json_data["filter"] == 1
-                dashboards.extra3_state = json_data["thermo"] == 1
+                if "lights" in json_data: dashboards.extra1_state = json_data["lights"] == 1
+                if "filter" in json_data: dashboards.extra2_state = json_data["filter"] == 1
+                if "thermo" in json_data: dashboards.extra3_state = json_data["thermo"] == 1
                 dashboards.save()
             elif source == "ESP32":
                 record = Point("aquarium").tag("user", user.username).tag("name", dashboards.name)

@@ -28,7 +28,7 @@ public:
 
   void readSensor() {
     this->value = this->analog ? analogRead(this->pin) : digitalRead(this->pin);
-    if (this->value > 4000 || this->value < 200) {
+    if (this->value > 4000) {
       this->value = -1000;
       this->scaled = -1000;
       return;

@@ -68,23 +68,13 @@
    * @param {number} outMax
    */
   const map = (x, inMin, inMax, outMin, outMax) =>
-    round2(((x - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin);
+    Math.max(Math.min(round2(((x - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin), outMax), outMin);
   /**
    * GET and POST the dashboard data to the backend
    * @param {boolean} skip
    */
   async function manageData(skip) {
-    const csrftoken = getCookie("csrftoken");
-    if (!skip)
-      await fetch("/dashboard/data/", {
-        method: "POST",
-        body: JSON.stringify({ lights, filter, thermo }),
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrftoken,
-          "X-Request-Source": "Website",
-        },
-      });
+    
 
     const res = await fetch("/dashboard/data/", {
       headers: { "X-Request-Source": "Website" },
@@ -126,7 +116,7 @@
     w.turbp.v.textContent = `${round2(turbp) || 0}%`;
     w.turbp.m.style.transform = `rotate(${map(turbp, 0, 100, 45, 315)}deg)`;
     w.turbp.p.classList.toggle("broken", turbp === null);
-
+    
     w.filter.classList.toggle("on", filter == 1);
     w.lights.classList.toggle("on", lights == 1);
     w.thermo.classList.toggle("on", thermo == 1);
@@ -136,23 +126,39 @@
     plug3Label.textContent = plug3;
   }
 
+  async function postSwitches(label, value) {
+    const csrftoken = getCookie("csrftoken");
+    const body = {};
+    body[label] = value;
+    await fetch("/dashboard/data/", {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken,
+          "X-Request-Source": "Website",
+        },
+      });
+  }
+
   manageData(true).then(updateDashboard);
-  setInterval(() => manageData().then(updateDashboard), 5000);
+  setInterval(() => manageData().then(updateDashboard), 2000);
 
   w.lights.addEventListener("click", () => {
     lights ^= 1;
     w.lights.classList.toggle("on", lights == 1);
+    postSwitches("lights", lights);
   });
   w.filter.addEventListener("click", () => {
     filter ^= 1;
     w.filter.classList.toggle("on", filter == 1);
+    postSwitches("filter", filter);
   });
   w.thermo.addEventListener("click", () => {
     thermo ^= 1;
     w.thermo.classList.toggle("on", thermo == 1);
+    postSwitches("thermo", thermo);
   });
-
-  
 
   const toggleInput = (label, input, state) => {
     if (!state && !!input.value) {
@@ -469,6 +475,7 @@
     border-radius: 100vmax;
     font-weight: 900;
     z-index: -1;
+    transition: 150ms ease-in-out;
   }
   .switch.on::before {
     content: "ON";
@@ -478,7 +485,8 @@
   .switch:not(.on)::before {
     content: "OFF";
     background-color: hsl(0 80% 65%);
-    left: 0;
+    right: 100%;
+    transform: translateX(calc(100% + .5rem));
   }
 
   .control-wrapper {
