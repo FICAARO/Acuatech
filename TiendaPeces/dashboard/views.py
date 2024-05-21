@@ -30,6 +30,7 @@ query_api = client.query_api()
 # Create your views here.
 def dashboard(request):
     session_id = request.COOKIES.get("sessionid")
+    if session_id is None: return JsonResponse({ "msg": "Dashboard not found" }, status=404)
     session = Session.objects.get(session_key=session_id)
     session_data = session.get_decoded()
 
