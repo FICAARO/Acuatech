@@ -31,6 +31,23 @@
     .custom-file-upload input[type="file"] {
       display: none;
     }
+
+    .card-percent {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #28a745; /* Green color for the percentage */
+    }
+    .card-label {
+      font-size: 1rem;
+      color: #6c757d; /* Gray color for the label */
+    }
+        .content-container {
+            background-color: rgba(255, 255, 255, 0.2); /* Color de fondo blanco con transparencia */
+            padding: 70px; /* Espacio interno para el contenido */
+            border-radius: 10px; /* Bordes redondeados */
+            width: min(80%, 50rem);
+            color: #052C42;
+        }
   </style>
 
 
@@ -38,8 +55,8 @@
     <div class="row">
       <div class="col-md-6 offset-md-3 text-center">
         <div class="banner">
-          <h2 class="mb-4">File Upload</h2>
-          <form id="uploadForm" enctype="multipart/form-data">
+          <h2 class="mb-4">File Upload</h2> 
+          <form id="uploadForm" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <label for="fileInput" class="custom-file-upload">
               <i class="fas fa-upload mr-2"></i>Select File
@@ -52,7 +69,24 @@
       </div>
     </div>
   </div>
+  {% if enable == True %}
+ <center>
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-md-6 offset-md-3">
+                  <div class="banner">
 
-{{name}}
+          <div class="card">
+            <div class=".content-container">
+              <div class="card-label"><h2>{{name}}</h2></div>
+              <div class="card-percent">{{percent}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </center>
+{% endif %}
 
 {% endblock %}

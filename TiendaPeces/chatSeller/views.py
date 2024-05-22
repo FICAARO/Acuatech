@@ -59,7 +59,8 @@ def geminiChat(text,rol):
 	print('** GenAI text: %r model & prompt %r\n' % (MODEL, text))
 	genai.configure(api_key=readtxtline("chatSeller/gemminitoken.txt"))
 	model = genai.GenerativeModel(MODEL)
-	response = model.generate_content("answer :"+text+" as a "+rol)
+	response = model.generate_content("you are"+rol+"answer :"+text)
+
 	return response.text
 
 def chatSellerIndex(request):
@@ -83,7 +84,9 @@ But our commitment to your aquatic journey doesn't end with the sale. We're here
 
 So why wait? Dive into the world of aquaria with us and discover the endless possibilities of creating your own aquatic masterpiece. Together, we'll turn your underwater dreams into reality.
 
-just answer the question
+You know everything about fishes
+
+if you dont know the answer give infomration how to improve the question
 """
 	msg=request.POST.get("message")
 	msgs=[]
@@ -92,7 +95,9 @@ just answer the question
 		msgs.append(msg)
 		answer=""
 		if request.method == 'POST':
-			answer=geminiChat(msg,role)
+			#answer=geminiChat(msg,role)
+			answer=webTranslate(geminiChat(webTranslate(msg,"es","en"),role),"en","es")
+
 		msgs.append(answer)
 		print(msgs)
 	return render(request,"chat.html",{"chatmsg":dict(enumerate(msgs))})

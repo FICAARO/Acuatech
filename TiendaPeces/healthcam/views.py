@@ -38,12 +38,13 @@ def predict_image_class(image_path):
             max_val=prediction[i]
             max_pos=i
     print(prediction,len(prediction),"max value",max_val)
-    return test[max_pos]
+    return test[max_pos] ,max_val
 
 
 
 def healthcamIndex(request):
     if  request.method == "POST":
+        enable=True
         f=request.FILES['sentFile'] # here you get the files needed
         response = {}
         file_name = "fishdiases/pic.jpg"
@@ -58,9 +59,13 @@ def healthcamIndex(request):
         #original = load_img(file_url[1:], target_size=(224, 224))
         #numpy_image = img_to_array(original)
         
-        label=predict_image_class(file_url[1:])
+        label,percent=predict_image_class(file_url[1:])
 
         response['name'] = str(label)
+        response['percent'] = str(percent)
+        response['enable'] = enable
+
         return render(request,'healthcam2.html',response)
     else:
+
         return render(request,'healthcam2.html')

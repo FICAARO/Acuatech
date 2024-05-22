@@ -89,6 +89,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'TiendaPeces.wsgi.application'
+CSRF_TRUSTED_ORIGINS = [
+    'https://main.jero98772.page',
+    'https://other.trusted.origin'
+]
 
 
 # Database
