@@ -4,11 +4,15 @@
 
 **Video**
 
-[![video](https://github.com/FICAARO/Acuatech/blob/main/docs/logo_not_bg.png)](
+[![video](https://raw.githubusercontent.com/FICAARO/Acuatech/refs/heads/main/docs/screenshots/6.png)](
 https://www.youtube.com/watch?v=YUgIStrgesU "Acuatech")
 
 
 Thank you for visiting our online fish store built with Django and Python! We're excited to offer you a unique shopping experience for all your aquatic needs. Our platform integrates cutting-edge technology to ensure the health and happiness of your aquatic friends.
+
+## Winner of Inventiva in EAFIT univercity
+
+![](https://raw.githubusercontent.com/FICAARO/Acuatech/refs/heads/main/docs/screenshots/7.jpeg)
 
 ## Features
 
@@ -77,3 +81,16 @@ Check the `requirements.txt` file for a list of required packages and versions.
 Our platform is licensed under GPL v3, ensuring that it remains open-source and accessible to all.
 
 We're committed to providing you with the best products and services for your aquatic needs. If you have any questions or suggestions, feel free to reach out to us through our support chat. Happy fishkeeping! 🐠🌊
+
+
+## Screenshots
+
+![](https://raw.githubusercontent.com/FICAARO/Acuatech/refs/heads/main/docs/screenshots/5.png)
+
+![](https://raw.githubusercontent.com/FICAARO/Acuatech/refs/heads/main/docs/screenshots/4.png)
+
+![](https://raw.githubusercontent.com/FICAARO/Acuatech/refs/heads/main/docs/screenshots/3.png)
+
+![](https://raw.githubusercontent.com/FICAARO/Acuatech/refs/heads/main/docs/screenshots/2.png)
+
+![](https://raw.githubusercontent.com/FICAARO/Acuatech/refs/heads/main/docs/screenshots/1.png)
