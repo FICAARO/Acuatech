@@ -2,6 +2,11 @@
 
 <p align="center"><img src="https://avatars.githubusercontent.com/u/147756061?s=400&u=97529d858fcada36803623812a49d96623e2133b&v=4" width="500" height="500"></p>
 
+**Translations in:**
+[Español](https://github.com/FICAARO/Acuatech/blob/main/docs/readme_es.md)
+[Deutsch](https://github.com/FICAARO/Acuatech/blob/main/docs/readme_ge.md) 
+[Русский](https://github.com/FICAARO/Acuatech/blob/main/docs/readme_ru.md)
+
 **Video**
 
 [![video](https://raw.githubusercontent.com/FICAARO/Acuatech/refs/heads/main/docs/screenshots/6.png)](
